@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>main.cpp</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #5c6370; font-style: italic;}
+.s1 { color: #bbbbbb;}
+.s2 { color: #d55fde; font-style: italic;}
+.s3 { color: #89ca78;}
+.s4 { color: #d19a66;}
+.ln { color: #495162; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#282c34">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.cpp</font>
+</center></td></tr></table>
+<pre><a name="l1"><span class="ln">1    </span></a><span class="s0">///  Ahmad Nour Haidar</span>
+<a name="l2"><span class="ln">2    </span></a>
+<a name="l3"><span class="ln">3    </span></a><span class="s2">#include </span><span class="s3">&lt;bits/stdc++.h&gt;</span>
+<a name="l4"><span class="ln">4    </span></a>
+<a name="l5"><span class="ln">5    </span></a><span class="s2">using namespace </span><span class="s1">std;</span>
+<a name="l6"><span class="ln">6    </span></a>
+<a name="l7"><span class="ln">7    </span></a><span class="s2">void </span><span class="s1">insert_value(</span><span class="s2">int </span><span class="s1">&amp;counter, </span><span class="s2">int </span><span class="s1">&amp;n, </span><span class="s2">int </span><span class="s1">*&amp;a, </span><span class="s2">int </span><span class="s1">value) {</span>
+<a name="l8"><span class="ln">8    </span></a>    <span class="s2">if </span><span class="s1">(counter &lt; n) {</span>
+<a name="l9"><span class="ln">9    </span></a>        <span class="s1">a[counter] = value;</span>
+<a name="l10"><span class="ln">10   </span></a>        <span class="s1">counter++;</span>
+<a name="l11"><span class="ln">11   </span></a>    <span class="s1">} </span><span class="s2">else </span><span class="s1">{</span>
+<a name="l12"><span class="ln">12   </span></a>        <span class="s1">n = </span><span class="s4">2 </span><span class="s1">* n; </span><span class="s0">// new size to array</span>
+<a name="l13"><span class="ln">13   </span></a>        <span class="s2">int </span><span class="s1">*b = </span><span class="s2">new int</span><span class="s1">[n];</span>
+<a name="l14"><span class="ln">14   </span></a>        <span class="s2">for </span><span class="s1">(</span><span class="s2">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; counter; ++i) {</span>
+<a name="l15"><span class="ln">15   </span></a>            <span class="s1">b[i] = a[i]; </span><span class="s0">// copy elements</span>
+<a name="l16"><span class="ln">16   </span></a>        <span class="s1">}</span>
+<a name="l17"><span class="ln">17   </span></a>        <span class="s1">b[counter] = value;</span>
+<a name="l18"><span class="ln">18   </span></a>        <span class="s1">counter++;</span>
+<a name="l19"><span class="ln">19   </span></a>        <span class="s1">a = b;</span>
+<a name="l20"><span class="ln">20   </span></a>    <span class="s1">}</span>
+<a name="l21"><span class="ln">21   </span></a><span class="s1">}</span>
+<a name="l22"><span class="ln">22   </span></a>
+<a name="l23"><span class="ln">23   </span></a><span class="s2">int </span><span class="s1">main() {</span>
+<a name="l24"><span class="ln">24   </span></a>
+<a name="l25"><span class="ln">25   </span></a>    <span class="s2">int </span><span class="s1">n, counter;</span>
+<a name="l26"><span class="ln">26   </span></a>    <span class="s2">int </span><span class="s1">*a;</span>
+<a name="l27"><span class="ln">27   </span></a>    <span class="s1">cin &gt;&gt; n &gt;&gt; counter;</span>
+<a name="l28"><span class="ln">28   </span></a>    <span class="s1">a = </span><span class="s2">new int</span><span class="s1">[n];</span>
+<a name="l29"><span class="ln">29   </span></a>    <span class="s2">for </span><span class="s1">(</span><span class="s2">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; counter; ++i) {</span>
+<a name="l30"><span class="ln">30   </span></a>        <span class="s1">cin &gt;&gt; a[i];</span>
+<a name="l31"><span class="ln">31   </span></a>    <span class="s1">}</span>
+<a name="l32"><span class="ln">32   </span></a>
+<a name="l33"><span class="ln">33   </span></a>    <span class="s1">insert_value(counter, n, a, </span><span class="s4">5</span><span class="s1">);</span>
+<a name="l34"><span class="ln">34   </span></a>    <span class="s1">insert_value(counter, n, a, </span><span class="s4">10</span><span class="s1">);</span>
+<a name="l35"><span class="ln">35   </span></a>    <span class="s1">insert_value(counter, n, a, </span><span class="s4">15</span><span class="s1">);</span>
+<a name="l36"><span class="ln">36   </span></a>    <span class="s1">insert_value(counter, n, a, </span><span class="s4">20</span><span class="s1">);</span>
+<a name="l37"><span class="ln">37   </span></a>
+<a name="l38"><span class="ln">38   </span></a>    <span class="s2">for </span><span class="s1">(</span><span class="s2">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; counter; ++i) {</span>
+<a name="l39"><span class="ln">39   </span></a>        <span class="s1">cout &lt;&lt; a[i] &lt;&lt; </span><span class="s3">' '</span><span class="s1">;</span>
+<a name="l40"><span class="ln">40   </span></a>    <span class="s1">}</span>
+<a name="l41"><span class="ln">41   </span></a>
+<a name="l42"><span class="ln">42   </span></a>
+<a name="l43"><span class="ln">43   </span></a>    <span class="s2">return </span><span class="s4">0</span><span class="s1">;</span>
+<a name="l44"><span class="ln">44   </span></a><span class="s1">}</span></pre>
+</body>
+</html>

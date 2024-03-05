@@ -1,0 +1,277 @@
+<html>
+<head>
+<title>m1.cpp</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #bbb529;}
+.s3 { color: #6a8759;}
+.s4 { color: #cc7832;}
+.s5 { color: #6897bb;}
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+m1.cpp</font>
+</center></td></tr></table>
+<pre><a name="l1"><span class="ln">1    </span></a><span class="s0">// C++ program for B-Tree insertion</span>
+<a name="l2"><span class="ln">2    </span></a><span class="s2">#include</span><span class="s3">&lt;iostream&gt;</span>
+<a name="l3"><span class="ln">3    </span></a>
+<a name="l4"><span class="ln">4    </span></a><span class="s4">using namespace </span><span class="s1">std</span><span class="s4">;</span>
+<a name="l5"><span class="ln">5    </span></a>
+<a name="l6"><span class="ln">6    </span></a><span class="s0">// A BTree node</span>
+<a name="l7"><span class="ln">7    </span></a><span class="s4">class </span><span class="s1">BTreeNode {</span>
+<a name="l8"><span class="ln">8    </span></a>    <span class="s4">int </span><span class="s1">*keys</span><span class="s4">; </span><span class="s0">// An array of keys</span>
+<a name="l9"><span class="ln">9    </span></a>    <span class="s4">int </span><span class="s1">t</span><span class="s4">;     </span><span class="s0">// Minimum degree (defines the range for number of keys)</span>
+<a name="l10"><span class="ln">10   </span></a>    <span class="s1">BTreeNode **C</span><span class="s4">; </span><span class="s0">// An array of child pointers</span>
+<a name="l11"><span class="ln">11   </span></a>    <span class="s4">int </span><span class="s1">n</span><span class="s4">;     </span><span class="s0">// Current number of keys</span>
+<a name="l12"><span class="ln">12   </span></a>    <span class="s4">bool </span><span class="s1">leaf</span><span class="s4">; </span><span class="s0">// Is true when node is leaf. Otherwise false</span>
+<a name="l13"><span class="ln">13   </span></a><span class="s4">public</span><span class="s1">:</span>
+<a name="l14"><span class="ln">14   </span></a>    <span class="s1">BTreeNode(</span><span class="s4">int </span><span class="s1">_t</span><span class="s4">, bool </span><span class="s1">_leaf)</span><span class="s4">; </span><span class="s0">// Constructor</span>
+<a name="l15"><span class="ln">15   </span></a>
+<a name="l16"><span class="ln">16   </span></a>    <span class="s0">// A utility function to insert a new key in the subtree rooted with</span>
+<a name="l17"><span class="ln">17   </span></a>    <span class="s0">// this node. The assumption is, the node must be non-full when this</span>
+<a name="l18"><span class="ln">18   </span></a>    <span class="s0">// function is called</span>
+<a name="l19"><span class="ln">19   </span></a>    <span class="s4">void </span><span class="s1">insertNonFull(</span><span class="s4">int </span><span class="s1">k)</span><span class="s4">;</span>
+<a name="l20"><span class="ln">20   </span></a>
+<a name="l21"><span class="ln">21   </span></a>    <span class="s0">// A utility function to split the child y of this node. i is index of y in</span>
+<a name="l22"><span class="ln">22   </span></a>    <span class="s0">// child array C[]. The Child y must be full when this function is called</span>
+<a name="l23"><span class="ln">23   </span></a>    <span class="s4">void </span><span class="s1">splitChild(</span><span class="s4">int </span><span class="s1">i</span><span class="s4">, </span><span class="s1">BTreeNode *y)</span><span class="s4">;</span>
+<a name="l24"><span class="ln">24   </span></a>
+<a name="l25"><span class="ln">25   </span></a>    <span class="s0">// A function to traverse all nodes in a subtree rooted with this node</span>
+<a name="l26"><span class="ln">26   </span></a>    <span class="s4">void </span><span class="s1">traverse()</span><span class="s4">;</span>
+<a name="l27"><span class="ln">27   </span></a>
+<a name="l28"><span class="ln">28   </span></a>    <span class="s0">// A function to search a key in the subtree rooted with this node.</span>
+<a name="l29"><span class="ln">29   </span></a>    <span class="s1">BTreeNode *search(</span><span class="s4">int </span><span class="s1">k)</span><span class="s4">; </span><span class="s0">// returns NULL if k is not present.</span>
+<a name="l30"><span class="ln">30   </span></a>
+<a name="l31"><span class="ln">31   </span></a><span class="s0">// Make BTree friend of this so that we can access private members of this</span>
+<a name="l32"><span class="ln">32   </span></a><span class="s0">// class in BTree functions</span>
+<a name="l33"><span class="ln">33   </span></a>    <span class="s4">friend class </span><span class="s1">BTree</span><span class="s4">;</span>
+<a name="l34"><span class="ln">34   </span></a><span class="s1">}</span><span class="s4">;</span>
+<a name="l35"><span class="ln">35   </span></a>
+<a name="l36"><span class="ln">36   </span></a><span class="s0">// A BTree</span>
+<a name="l37"><span class="ln">37   </span></a><span class="s4">class </span><span class="s1">BTree {</span>
+<a name="l38"><span class="ln">38   </span></a>    <span class="s1">BTreeNode *root</span><span class="s4">; </span><span class="s0">// Pointer to root node</span>
+<a name="l39"><span class="ln">39   </span></a>    <span class="s4">int </span><span class="s1">t</span><span class="s4">; </span><span class="s0">// Minimum degree</span>
+<a name="l40"><span class="ln">40   </span></a><span class="s4">public</span><span class="s1">:</span>
+<a name="l41"><span class="ln">41   </span></a>    <span class="s0">// Constructor (Initializes tree as empty)</span>
+<a name="l42"><span class="ln">42   </span></a>    <span class="s1">BTree(</span><span class="s4">int </span><span class="s1">_t) {</span>
+<a name="l43"><span class="ln">43   </span></a>        <span class="s1">root = NULL</span><span class="s4">;</span>
+<a name="l44"><span class="ln">44   </span></a>        <span class="s1">t = _t</span><span class="s4">;</span>
+<a name="l45"><span class="ln">45   </span></a>    <span class="s1">}</span>
+<a name="l46"><span class="ln">46   </span></a>
+<a name="l47"><span class="ln">47   </span></a>    <span class="s0">// function to traverse the tree</span>
+<a name="l48"><span class="ln">48   </span></a>    <span class="s4">void </span><span class="s1">traverse() {</span>
+<a name="l49"><span class="ln">49   </span></a>        <span class="s4">if </span><span class="s1">(root != NULL) {</span>
+<a name="l50"><span class="ln">50   </span></a>            <span class="s1">root-&gt;traverse()</span><span class="s4">;</span>
+<a name="l51"><span class="ln">51   </span></a>        <span class="s1">}</span>
+<a name="l52"><span class="ln">52   </span></a>    <span class="s1">}</span>
+<a name="l53"><span class="ln">53   </span></a>
+<a name="l54"><span class="ln">54   </span></a>    <span class="s0">// function to search a key in this tree</span>
+<a name="l55"><span class="ln">55   </span></a>    <span class="s1">BTreeNode *search(</span><span class="s4">int </span><span class="s1">k) {</span>
+<a name="l56"><span class="ln">56   </span></a>        <span class="s4">return </span><span class="s1">(root == NULL) ? NULL : root-&gt;search(k)</span><span class="s4">;</span>
+<a name="l57"><span class="ln">57   </span></a>    <span class="s1">}</span>
+<a name="l58"><span class="ln">58   </span></a>
+<a name="l59"><span class="ln">59   </span></a>    <span class="s0">// The main function that inserts a new key in this B-Tree</span>
+<a name="l60"><span class="ln">60   </span></a>    <span class="s4">void </span><span class="s1">insert(</span><span class="s4">int </span><span class="s1">k)</span><span class="s4">;</span>
+<a name="l61"><span class="ln">61   </span></a><span class="s1">}</span><span class="s4">;</span>
+<a name="l62"><span class="ln">62   </span></a>
+<a name="l63"><span class="ln">63   </span></a><span class="s0">// Constructor for BTreeNode class</span>
+<a name="l64"><span class="ln">64   </span></a><span class="s1">BTreeNode::BTreeNode(</span><span class="s4">int </span><span class="s1">t1</span><span class="s4">, bool </span><span class="s1">leaf1) {</span>
+<a name="l65"><span class="ln">65   </span></a>    <span class="s0">// Copy the given minimum degree and leaf property</span>
+<a name="l66"><span class="ln">66   </span></a>    <span class="s1">t = t1</span><span class="s4">;</span>
+<a name="l67"><span class="ln">67   </span></a>    <span class="s1">leaf = leaf1</span><span class="s4">;</span>
+<a name="l68"><span class="ln">68   </span></a>
+<a name="l69"><span class="ln">69   </span></a>    <span class="s0">// Allocate memory for maximum number of possible keys</span>
+<a name="l70"><span class="ln">70   </span></a>    <span class="s0">// and child pointers</span>
+<a name="l71"><span class="ln">71   </span></a>    <span class="s1">keys = </span><span class="s4">new int</span><span class="s1">[</span><span class="s5">2 </span><span class="s1">* t - </span><span class="s5">1</span><span class="s1">]</span><span class="s4">;</span>
+<a name="l72"><span class="ln">72   </span></a>    <span class="s1">C = </span><span class="s4">new </span><span class="s1">BTreeNode *[</span><span class="s5">2 </span><span class="s1">* t]</span><span class="s4">;</span>
+<a name="l73"><span class="ln">73   </span></a>
+<a name="l74"><span class="ln">74   </span></a>    <span class="s0">// Initialize the number of keys as 0</span>
+<a name="l75"><span class="ln">75   </span></a>    <span class="s1">n = </span><span class="s5">0</span><span class="s4">;</span>
+<a name="l76"><span class="ln">76   </span></a><span class="s1">}</span>
+<a name="l77"><span class="ln">77   </span></a>
+<a name="l78"><span class="ln">78   </span></a><span class="s0">// Function to traverse all nodes in a subtree rooted with this node</span>
+<a name="l79"><span class="ln">79   </span></a><span class="s4">void </span><span class="s1">BTreeNode::traverse() {</span>
+<a name="l80"><span class="ln">80   </span></a>    <span class="s0">// There are n keys and n+1 children, traverse through n keys</span>
+<a name="l81"><span class="ln">81   </span></a>    <span class="s0">// and first n children</span>
+<a name="l82"><span class="ln">82   </span></a>    <span class="s4">int </span><span class="s1">i</span><span class="s4">;</span>
+<a name="l83"><span class="ln">83   </span></a>    <span class="s4">for </span><span class="s1">(i = </span><span class="s5">0</span><span class="s4">; </span><span class="s1">i &lt; n</span><span class="s4">; </span><span class="s1">i++) {</span>
+<a name="l84"><span class="ln">84   </span></a>        <span class="s0">// If this is not leaf, then before printing key[i],</span>
+<a name="l85"><span class="ln">85   </span></a>        <span class="s0">// traverse the subtree rooted with child C[i].</span>
+<a name="l86"><span class="ln">86   </span></a>        <span class="s4">if </span><span class="s1">(leaf == </span><span class="s4">false</span><span class="s1">)</span>
+<a name="l87"><span class="ln">87   </span></a>            <span class="s1">C[i]-&gt;traverse()</span><span class="s4">;</span>
+<a name="l88"><span class="ln">88   </span></a>        <span class="s1">cout &lt;&lt; </span><span class="s3">&quot; &quot; </span><span class="s1">&lt;&lt; keys[i]</span><span class="s4">;</span>
+<a name="l89"><span class="ln">89   </span></a>    <span class="s1">}</span>
+<a name="l90"><span class="ln">90   </span></a>
+<a name="l91"><span class="ln">91   </span></a>    <span class="s0">// Print the subtree rooted with last child</span>
+<a name="l92"><span class="ln">92   </span></a>    <span class="s4">if </span><span class="s1">(leaf == </span><span class="s4">false</span><span class="s1">)</span>
+<a name="l93"><span class="ln">93   </span></a>        <span class="s1">C[i]-&gt;traverse()</span><span class="s4">;</span>
+<a name="l94"><span class="ln">94   </span></a><span class="s1">}</span>
+<a name="l95"><span class="ln">95   </span></a>
+<a name="l96"><span class="ln">96   </span></a><span class="s0">// Function to search key k in subtree rooted with this node</span>
+<a name="l97"><span class="ln">97   </span></a><span class="s1">BTreeNode *BTreeNode::search(</span><span class="s4">int </span><span class="s1">k) {</span>
+<a name="l98"><span class="ln">98   </span></a>    <span class="s0">// Find the first key greater than or equal to k</span>
+<a name="l99"><span class="ln">99   </span></a>    <span class="s4">int </span><span class="s1">i = </span><span class="s5">0</span><span class="s4">;</span>
+<a name="l100"><span class="ln">100  </span></a>    <span class="s4">while </span><span class="s1">(i &lt; n &amp;&amp; k &gt; keys[i])</span>
+<a name="l101"><span class="ln">101  </span></a>        <span class="s1">i++</span><span class="s4">;</span>
+<a name="l102"><span class="ln">102  </span></a>
+<a name="l103"><span class="ln">103  </span></a>    <span class="s0">// If the found key is equal to k, return this node</span>
+<a name="l104"><span class="ln">104  </span></a>    <span class="s4">if </span><span class="s1">(keys[i] == k)</span>
+<a name="l105"><span class="ln">105  </span></a>        <span class="s4">return this;</span>
+<a name="l106"><span class="ln">106  </span></a>
+<a name="l107"><span class="ln">107  </span></a>    <span class="s0">// If key is not found here and this is a leaf node</span>
+<a name="l108"><span class="ln">108  </span></a>    <span class="s4">if </span><span class="s1">(leaf == </span><span class="s4">true</span><span class="s1">)</span>
+<a name="l109"><span class="ln">109  </span></a>        <span class="s4">return </span><span class="s1">NULL</span><span class="s4">;</span>
+<a name="l110"><span class="ln">110  </span></a>
+<a name="l111"><span class="ln">111  </span></a>    <span class="s0">// Go to the appropriate child</span>
+<a name="l112"><span class="ln">112  </span></a>    <span class="s4">return </span><span class="s1">C[i]-&gt;search(k)</span><span class="s4">;</span>
+<a name="l113"><span class="ln">113  </span></a><span class="s1">}</span>
+<a name="l114"><span class="ln">114  </span></a>
+<a name="l115"><span class="ln">115  </span></a><span class="s0">// The main function that inserts a new key in this B-Tree</span>
+<a name="l116"><span class="ln">116  </span></a><span class="s4">void </span><span class="s1">BTree::insert(</span><span class="s4">int </span><span class="s1">k) {</span>
+<a name="l117"><span class="ln">117  </span></a>    <span class="s0">// If tree is empty</span>
+<a name="l118"><span class="ln">118  </span></a>    <span class="s4">if </span><span class="s1">(root == NULL) {</span>
+<a name="l119"><span class="ln">119  </span></a>        <span class="s0">// Allocate memory for root</span>
+<a name="l120"><span class="ln">120  </span></a>        <span class="s1">root = </span><span class="s4">new </span><span class="s1">BTreeNode(t</span><span class="s4">, true</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l121"><span class="ln">121  </span></a>        <span class="s1">root-&gt;keys[</span><span class="s5">0</span><span class="s1">] = k</span><span class="s4">; </span><span class="s0">// Insert key</span>
+<a name="l122"><span class="ln">122  </span></a>        <span class="s1">root-&gt;n = </span><span class="s5">1</span><span class="s4">; </span><span class="s0">// Update number of keys in root</span>
+<a name="l123"><span class="ln">123  </span></a>    <span class="s1">} </span><span class="s4">else </span><span class="s0">// If tree is not empty</span>
+<a name="l124"><span class="ln">124  </span></a>    <span class="s1">{</span>
+<a name="l125"><span class="ln">125  </span></a>        <span class="s0">// If root is full, then tree grows in height</span>
+<a name="l126"><span class="ln">126  </span></a>        <span class="s4">if </span><span class="s1">(root-&gt;n == </span><span class="s5">2 </span><span class="s1">* t - </span><span class="s5">1</span><span class="s1">) {</span>
+<a name="l127"><span class="ln">127  </span></a>            <span class="s0">// Allocate memory for new root</span>
+<a name="l128"><span class="ln">128  </span></a>            <span class="s1">BTreeNode *s = </span><span class="s4">new </span><span class="s1">BTreeNode(t</span><span class="s4">, false</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l129"><span class="ln">129  </span></a>
+<a name="l130"><span class="ln">130  </span></a>            <span class="s0">// Make old root as child of new root</span>
+<a name="l131"><span class="ln">131  </span></a>            <span class="s1">s-&gt;C[</span><span class="s5">0</span><span class="s1">] = root</span><span class="s4">;</span>
+<a name="l132"><span class="ln">132  </span></a>
+<a name="l133"><span class="ln">133  </span></a>            <span class="s0">// Split the old root and move 1 key to the new root</span>
+<a name="l134"><span class="ln">134  </span></a>            <span class="s1">s-&gt;splitChild(</span><span class="s5">0</span><span class="s4">, </span><span class="s1">root)</span><span class="s4">;</span>
+<a name="l135"><span class="ln">135  </span></a>
+<a name="l136"><span class="ln">136  </span></a>            <span class="s0">// New root has two children now. Decide which of the</span>
+<a name="l137"><span class="ln">137  </span></a>            <span class="s0">// two children is going to have new key</span>
+<a name="l138"><span class="ln">138  </span></a>            <span class="s4">int </span><span class="s1">i = </span><span class="s5">0</span><span class="s4">;</span>
+<a name="l139"><span class="ln">139  </span></a>            <span class="s4">if </span><span class="s1">(s-&gt;keys[</span><span class="s5">0</span><span class="s1">] &lt; k)</span>
+<a name="l140"><span class="ln">140  </span></a>                <span class="s1">i++</span><span class="s4">;</span>
+<a name="l141"><span class="ln">141  </span></a>            <span class="s1">s-&gt;C[i]-&gt;insertNonFull(k)</span><span class="s4">;</span>
+<a name="l142"><span class="ln">142  </span></a>
+<a name="l143"><span class="ln">143  </span></a>            <span class="s0">// Change root</span>
+<a name="l144"><span class="ln">144  </span></a>            <span class="s1">root = s</span><span class="s4">;</span>
+<a name="l145"><span class="ln">145  </span></a>        <span class="s1">} </span><span class="s4">else </span><span class="s0">// If root is not full, call insertNonFull for root</span>
+<a name="l146"><span class="ln">146  </span></a>            <span class="s1">root-&gt;insertNonFull(k)</span><span class="s4">;</span>
+<a name="l147"><span class="ln">147  </span></a>    <span class="s1">}</span>
+<a name="l148"><span class="ln">148  </span></a><span class="s1">}</span>
+<a name="l149"><span class="ln">149  </span></a>
+<a name="l150"><span class="ln">150  </span></a><span class="s0">// A utility function to insert a new key in this node</span>
+<a name="l151"><span class="ln">151  </span></a><span class="s0">// The assumption is, the node must be non-full when this</span>
+<a name="l152"><span class="ln">152  </span></a><span class="s0">// function is called</span>
+<a name="l153"><span class="ln">153  </span></a><span class="s4">void </span><span class="s1">BTreeNode::insertNonFull(</span><span class="s4">int </span><span class="s1">k) {</span>
+<a name="l154"><span class="ln">154  </span></a>    <span class="s0">// Initialize index as index of rightmost element</span>
+<a name="l155"><span class="ln">155  </span></a>    <span class="s4">int </span><span class="s1">i = n - </span><span class="s5">1</span><span class="s4">;</span>
+<a name="l156"><span class="ln">156  </span></a>
+<a name="l157"><span class="ln">157  </span></a>    <span class="s0">// If this is a leaf node</span>
+<a name="l158"><span class="ln">158  </span></a>    <span class="s4">if </span><span class="s1">(leaf) {</span>
+<a name="l159"><span class="ln">159  </span></a>        <span class="s0">// The following loop does two things</span>
+<a name="l160"><span class="ln">160  </span></a>        <span class="s0">// a) Finds the location of new key to be inserted</span>
+<a name="l161"><span class="ln">161  </span></a>        <span class="s0">// b) Moves all greater keys to one place ahead</span>
+<a name="l162"><span class="ln">162  </span></a>        <span class="s4">while </span><span class="s1">(i &gt;= </span><span class="s5">0 </span><span class="s1">&amp;&amp; keys[i] &gt; k) {</span>
+<a name="l163"><span class="ln">163  </span></a>            <span class="s1">keys[i + </span><span class="s5">1</span><span class="s1">] = keys[i]</span><span class="s4">;</span>
+<a name="l164"><span class="ln">164  </span></a>            <span class="s1">i--</span><span class="s4">;</span>
+<a name="l165"><span class="ln">165  </span></a>        <span class="s1">}</span>
+<a name="l166"><span class="ln">166  </span></a>
+<a name="l167"><span class="ln">167  </span></a>        <span class="s0">// Insert the new key at found location</span>
+<a name="l168"><span class="ln">168  </span></a>        <span class="s1">keys[i + </span><span class="s5">1</span><span class="s1">] = k</span><span class="s4">;</span>
+<a name="l169"><span class="ln">169  </span></a>        <span class="s1">n = n + </span><span class="s5">1</span><span class="s4">;</span>
+<a name="l170"><span class="ln">170  </span></a>    <span class="s1">} </span><span class="s4">else </span><span class="s0">// If this node is not leaf</span>
+<a name="l171"><span class="ln">171  </span></a>    <span class="s1">{</span>
+<a name="l172"><span class="ln">172  </span></a>        <span class="s0">// Find the child which is going to have the new key</span>
+<a name="l173"><span class="ln">173  </span></a>        <span class="s4">while </span><span class="s1">(i &gt;= </span><span class="s5">0 </span><span class="s1">&amp;&amp; keys[i] &gt; k)</span>
+<a name="l174"><span class="ln">174  </span></a>            <span class="s1">i--</span><span class="s4">;</span>
+<a name="l175"><span class="ln">175  </span></a>
+<a name="l176"><span class="ln">176  </span></a>        <span class="s0">// See if the found child is full</span>
+<a name="l177"><span class="ln">177  </span></a>        <span class="s4">if </span><span class="s1">(C[i + </span><span class="s5">1</span><span class="s1">]-&gt;n == </span><span class="s5">2 </span><span class="s1">* t - </span><span class="s5">1</span><span class="s1">) {</span>
+<a name="l178"><span class="ln">178  </span></a>            <span class="s0">// If the child is full, then split it</span>
+<a name="l179"><span class="ln">179  </span></a>            <span class="s1">splitChild(i + </span><span class="s5">1</span><span class="s4">, </span><span class="s1">C[i + </span><span class="s5">1</span><span class="s1">])</span><span class="s4">;</span>
+<a name="l180"><span class="ln">180  </span></a>
+<a name="l181"><span class="ln">181  </span></a>            <span class="s0">// After split, the middle key of C[i] goes up and</span>
+<a name="l182"><span class="ln">182  </span></a>            <span class="s0">// C[i] is splitted into two. See which of the two</span>
+<a name="l183"><span class="ln">183  </span></a>            <span class="s0">// is going to have the new key</span>
+<a name="l184"><span class="ln">184  </span></a>            <span class="s4">if </span><span class="s1">(keys[i + </span><span class="s5">1</span><span class="s1">] &lt; k)</span>
+<a name="l185"><span class="ln">185  </span></a>                <span class="s1">i++</span><span class="s4">;</span>
+<a name="l186"><span class="ln">186  </span></a>        <span class="s1">}</span>
+<a name="l187"><span class="ln">187  </span></a>        <span class="s1">C[i + </span><span class="s5">1</span><span class="s1">]-&gt;insertNonFull(k)</span><span class="s4">;</span>
+<a name="l188"><span class="ln">188  </span></a>    <span class="s1">}</span>
+<a name="l189"><span class="ln">189  </span></a><span class="s1">}</span>
+<a name="l190"><span class="ln">190  </span></a>
+<a name="l191"><span class="ln">191  </span></a><span class="s0">// A utility function to split the child y of this node</span>
+<a name="l192"><span class="ln">192  </span></a><span class="s0">// Note that y must be full when this function is called</span>
+<a name="l193"><span class="ln">193  </span></a><span class="s4">void </span><span class="s1">BTreeNode::splitChild(</span><span class="s4">int </span><span class="s1">i</span><span class="s4">, </span><span class="s1">BTreeNode *y) {</span>
+<a name="l194"><span class="ln">194  </span></a>    <span class="s0">// Create a new node which is going to store (t-1) keys</span>
+<a name="l195"><span class="ln">195  </span></a>    <span class="s0">// of y</span>
+<a name="l196"><span class="ln">196  </span></a>    <span class="s1">BTreeNode *z = </span><span class="s4">new </span><span class="s1">BTreeNode(y-&gt;t</span><span class="s4">, </span><span class="s1">y-&gt;leaf)</span><span class="s4">;</span>
+<a name="l197"><span class="ln">197  </span></a>    <span class="s1">z-&gt;n = t - </span><span class="s5">1</span><span class="s4">;</span>
+<a name="l198"><span class="ln">198  </span></a>
+<a name="l199"><span class="ln">199  </span></a>    <span class="s0">// Copy the last (t-1) keys of y to z</span>
+<a name="l200"><span class="ln">200  </span></a>    <span class="s4">for </span><span class="s1">(</span><span class="s4">int </span><span class="s1">j = </span><span class="s5">0</span><span class="s4">; </span><span class="s1">j &lt; t - </span><span class="s5">1</span><span class="s4">; </span><span class="s1">j++)</span>
+<a name="l201"><span class="ln">201  </span></a>        <span class="s1">z-&gt;keys[j] = y-&gt;keys[j + t]</span><span class="s4">;</span>
+<a name="l202"><span class="ln">202  </span></a>
+<a name="l203"><span class="ln">203  </span></a>    <span class="s0">// Copy the last t children of y to z</span>
+<a name="l204"><span class="ln">204  </span></a>    <span class="s4">if </span><span class="s1">(y-&gt;leaf == </span><span class="s4">false</span><span class="s1">) {</span>
+<a name="l205"><span class="ln">205  </span></a>        <span class="s4">for </span><span class="s1">(</span><span class="s4">int </span><span class="s1">j = </span><span class="s5">0</span><span class="s4">; </span><span class="s1">j &lt; t</span><span class="s4">; </span><span class="s1">j++)</span>
+<a name="l206"><span class="ln">206  </span></a>            <span class="s1">z-&gt;C[j] = y-&gt;C[j + t]</span><span class="s4">;</span>
+<a name="l207"><span class="ln">207  </span></a>    <span class="s1">}</span>
+<a name="l208"><span class="ln">208  </span></a>
+<a name="l209"><span class="ln">209  </span></a>    <span class="s0">// Reduce the number of keys in y</span>
+<a name="l210"><span class="ln">210  </span></a>    <span class="s1">y-&gt;n = t - </span><span class="s5">1</span><span class="s4">;</span>
+<a name="l211"><span class="ln">211  </span></a>
+<a name="l212"><span class="ln">212  </span></a>    <span class="s0">// Since this node is going to have a new child,</span>
+<a name="l213"><span class="ln">213  </span></a>    <span class="s0">// create space of new child</span>
+<a name="l214"><span class="ln">214  </span></a>    <span class="s4">for </span><span class="s1">(</span><span class="s4">int </span><span class="s1">j = n</span><span class="s4">; </span><span class="s1">j &gt;= i + </span><span class="s5">1</span><span class="s4">; </span><span class="s1">j--)</span>
+<a name="l215"><span class="ln">215  </span></a>        <span class="s1">C[j + </span><span class="s5">1</span><span class="s1">] = C[j]</span><span class="s4">;</span>
+<a name="l216"><span class="ln">216  </span></a>
+<a name="l217"><span class="ln">217  </span></a>    <span class="s0">// Link the new child to this node</span>
+<a name="l218"><span class="ln">218  </span></a>    <span class="s1">C[i + </span><span class="s5">1</span><span class="s1">] = z</span><span class="s4">;</span>
+<a name="l219"><span class="ln">219  </span></a>
+<a name="l220"><span class="ln">220  </span></a>    <span class="s0">// A key of y will move to this node. Find the location of</span>
+<a name="l221"><span class="ln">221  </span></a>    <span class="s0">// new key and move all greater keys one space ahead</span>
+<a name="l222"><span class="ln">222  </span></a>    <span class="s4">for </span><span class="s1">(</span><span class="s4">int </span><span class="s1">j = n - </span><span class="s5">1</span><span class="s4">; </span><span class="s1">j &gt;= i</span><span class="s4">; </span><span class="s1">j--)</span>
+<a name="l223"><span class="ln">223  </span></a>        <span class="s1">keys[j + </span><span class="s5">1</span><span class="s1">] = keys[j]</span><span class="s4">;</span>
+<a name="l224"><span class="ln">224  </span></a>
+<a name="l225"><span class="ln">225  </span></a>    <span class="s0">// Copy the middle key of y to this node</span>
+<a name="l226"><span class="ln">226  </span></a>    <span class="s1">keys[i] = y-&gt;keys[t - </span><span class="s5">1</span><span class="s1">]</span><span class="s4">;</span>
+<a name="l227"><span class="ln">227  </span></a>
+<a name="l228"><span class="ln">228  </span></a>    <span class="s0">// Increment count of keys in this node</span>
+<a name="l229"><span class="ln">229  </span></a>    <span class="s1">n = n + </span><span class="s5">1</span><span class="s4">;</span>
+<a name="l230"><span class="ln">230  </span></a><span class="s1">}</span>
+<a name="l231"><span class="ln">231  </span></a>
+<a name="l232"><span class="ln">232  </span></a><span class="s0">// Driver program to test above functions</span>
+<a name="l233"><span class="ln">233  </span></a><span class="s4">int </span><span class="s1">main() {</span>
+<a name="l234"><span class="ln">234  </span></a>    <span class="s1">BTree t(</span><span class="s5">3</span><span class="s1">)</span><span class="s4">; </span><span class="s0">// A B-Tree with minimum degree 3</span>
+<a name="l235"><span class="ln">235  </span></a>    <span class="s1">t.insert(</span><span class="s5">10</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l236"><span class="ln">236  </span></a>    <span class="s1">t.insert(</span><span class="s5">20</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l237"><span class="ln">237  </span></a>    <span class="s1">t.insert(</span><span class="s5">5</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l238"><span class="ln">238  </span></a>    <span class="s1">t.insert(</span><span class="s5">6</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l239"><span class="ln">239  </span></a>    <span class="s1">t.insert(</span><span class="s5">12</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l240"><span class="ln">240  </span></a>    <span class="s1">t.insert(</span><span class="s5">30</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l241"><span class="ln">241  </span></a>    <span class="s1">t.insert(</span><span class="s5">7</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l242"><span class="ln">242  </span></a>    <span class="s1">t.insert(</span><span class="s5">17</span><span class="s1">)</span><span class="s4">;</span>
+<a name="l243"><span class="ln">243  </span></a>
+<a name="l244"><span class="ln">244  </span></a>    <span class="s1">cout &lt;&lt; </span><span class="s3">&quot;Traversal of the constructed tree is &quot;</span><span class="s4">;</span>
+<a name="l245"><span class="ln">245  </span></a>    <span class="s1">t.traverse()</span><span class="s4">;</span>
+<a name="l246"><span class="ln">246  </span></a>
+<a name="l247"><span class="ln">247  </span></a>    <span class="s4">int </span><span class="s1">k = </span><span class="s5">6</span><span class="s4">;</span>
+<a name="l248"><span class="ln">248  </span></a>    <span class="s1">(t.search(k) != </span><span class="s4">nullptr</span><span class="s1">) ? cout &lt;&lt; </span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">Present&quot; </span><span class="s1">: cout &lt;&lt; </span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">Not Present&quot;</span><span class="s4">;</span>
+<a name="l249"><span class="ln">249  </span></a>
+<a name="l250"><span class="ln">250  </span></a>    <span class="s1">k = </span><span class="s5">15</span><span class="s4">;</span>
+<a name="l251"><span class="ln">251  </span></a>    <span class="s1">(t.search(k) != </span><span class="s4">nullptr</span><span class="s1">) ? cout &lt;&lt; </span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">Present&quot; </span><span class="s1">: cout &lt;&lt; </span><span class="s3">&quot;</span><span class="s4">\n</span><span class="s3">Not Present&quot;</span><span class="s4">;</span>
+<a name="l252"><span class="ln">252  </span></a>
+<a name="l253"><span class="ln">253  </span></a>    <span class="s4">return </span><span class="s5">0</span><span class="s4">;</span>
+<a name="l254"><span class="ln">254  </span></a><span class="s1">}</span>
+<a name="l255"><span class="ln">255  </span></a></pre>
+</body>
+</html>

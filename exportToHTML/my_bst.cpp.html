@@ -1,0 +1,1493 @@
+<html>
+<head>
+<title>my_bst.cpp</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bbbbbb;}
+.s1 { color: #5c6370; font-style: italic;}
+.s2 { color: #d55fde; font-style: italic;}
+.s3 { color: #89ca78;}
+.s4 { color: #d19a66;}
+.s5 { color: #2bbac5;}
+.ln { color: #495162; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#282c34">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+my_bst.cpp</font>
+</center></td></tr></table>
+<pre><a name="l1"><span class="ln">1    </span></a>
+<a name="l2"><span class="ln">2    </span></a>
+<a name="l3"><span class="ln">3    </span></a><span class="s1">///  Ahmad Nour Haidar</span>
+<a name="l4"><span class="ln">4    </span></a>
+<a name="l5"><span class="ln">5    </span></a><span class="s2">#include </span><span class="s3">&lt;iostream&gt;</span>
+<a name="l6"><span class="ln">6    </span></a><span class="s2">#include </span><span class="s3">&lt;queue&gt;</span>
+<a name="l7"><span class="ln">7    </span></a><span class="s2">#include </span><span class="s3">&lt;iomanip&gt;</span>
+<a name="l8"><span class="ln">8    </span></a>
+<a name="l9"><span class="ln">9    </span></a><span class="s2">#define </span><span class="s0">myType </span><span class="s2">int</span>
+<a name="l10"><span class="ln">10   </span></a><span class="s2">#define </span><span class="s0">endl </span><span class="s3">'\n'</span>
+<a name="l11"><span class="ln">11   </span></a>
+<a name="l12"><span class="ln">12   </span></a><span class="s2">using namespace </span><span class="s0">std;</span>
+<a name="l13"><span class="ln">13   </span></a>
+<a name="l14"><span class="ln">14   </span></a><span class="s2">class </span><span class="s0">BinarySearchTree {</span>
+<a name="l15"><span class="ln">15   </span></a><span class="s2">private</span><span class="s0">:</span>
+<a name="l16"><span class="ln">16   </span></a>    <span class="s2">struct </span><span class="s0">Edge {</span>
+<a name="l17"><span class="ln">17   </span></a>        <span class="s0">myType value;</span>
+<a name="l18"><span class="ln">18   </span></a>        <span class="s2">int </span><span class="s0">height;</span>
+<a name="l19"><span class="ln">19   </span></a>        <span class="s0">Edge *left;</span>
+<a name="l20"><span class="ln">20   </span></a>        <span class="s0">Edge *right;</span>
+<a name="l21"><span class="ln">21   </span></a>
+<a name="l22"><span class="ln">22   </span></a>        <span class="s2">explicit </span><span class="s0">Edge(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l23"><span class="ln">23   </span></a>            <span class="s2">this</span><span class="s0">-&gt;value = value;</span>
+<a name="l24"><span class="ln">24   </span></a>            <span class="s0">height = </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l25"><span class="ln">25   </span></a>            <span class="s0">left = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l26"><span class="ln">26   </span></a>            <span class="s0">right = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l27"><span class="ln">27   </span></a>        <span class="s0">}</span>
+<a name="l28"><span class="ln">28   </span></a>    <span class="s0">};</span>
+<a name="l29"><span class="ln">29   </span></a>
+<a name="l30"><span class="ln">30   </span></a>    <span class="s0">Edge *rootTree;</span>
+<a name="l31"><span class="ln">31   </span></a>    <span class="s2">bool </span><span class="s0">is_inserted; </span><span class="s1">// use for know if the value inserted or not</span>
+<a name="l32"><span class="ln">32   </span></a>    <span class="s2">bool </span><span class="s0">is_deleted; </span><span class="s1">// use for know if the value deleted or not</span>
+<a name="l33"><span class="ln">33   </span></a>    <span class="s2">int </span><span class="s0">count_nodes;</span>
+<a name="l34"><span class="ln">34   </span></a>
+<a name="l35"><span class="ln">35   </span></a>    <span class="s1">/// functions for insert in bst</span>
+<a name="l36"><span class="ln">36   </span></a>    <span class="s2">void </span><span class="s0">_insert_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l37"><span class="ln">37   </span></a>        <span class="s0">Edge *newNode = </span><span class="s2">new </span><span class="s0">Edge(value);</span>
+<a name="l38"><span class="ln">38   </span></a>        <span class="s2">if </span><span class="s0">(rootTree == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l39"><span class="ln">39   </span></a>            <span class="s0">rootTree = newNode;</span>
+<a name="l40"><span class="ln">40   </span></a>            <span class="s0">is_inserted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l41"><span class="ln">41   </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l42"><span class="ln">42   </span></a>        <span class="s0">}</span>
+<a name="l43"><span class="ln">43   </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l44"><span class="ln">44   </span></a>        <span class="s0">Edge *parent = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l45"><span class="ln">45   </span></a>        <span class="s2">while </span><span class="s0">(current) {</span>
+<a name="l46"><span class="ln">46   </span></a>            <span class="s0">parent = current;</span>
+<a name="l47"><span class="ln">47   </span></a>            <span class="s2">if </span><span class="s0">(value == current-&gt;value) {</span>
+<a name="l48"><span class="ln">48   </span></a>                <span class="s1">// duplicate not allowed</span>
+<a name="l49"><span class="ln">49   </span></a>                <span class="s0">is_inserted = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l50"><span class="ln">50   </span></a>                <span class="s2">return</span><span class="s0">;</span>
+<a name="l51"><span class="ln">51   </span></a>            <span class="s0">}</span>
+<a name="l52"><span class="ln">52   </span></a>            <span class="s2">if </span><span class="s0">(value &lt; current-&gt;value) {</span>
+<a name="l53"><span class="ln">53   </span></a>                <span class="s0">current = current-&gt;left;</span>
+<a name="l54"><span class="ln">54   </span></a>            <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &gt; current-&gt;value) {</span>
+<a name="l55"><span class="ln">55   </span></a>                <span class="s0">current = current-&gt;right;</span>
+<a name="l56"><span class="ln">56   </span></a>            <span class="s0">}</span>
+<a name="l57"><span class="ln">57   </span></a>        <span class="s0">}</span>
+<a name="l58"><span class="ln">58   </span></a>        <span class="s2">if </span><span class="s0">(value &lt; parent-&gt;value) {</span>
+<a name="l59"><span class="ln">59   </span></a>            <span class="s0">parent-&gt;left = newNode;</span>
+<a name="l60"><span class="ln">60   </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l61"><span class="ln">61   </span></a>            <span class="s0">parent-&gt;right = newNode;</span>
+<a name="l62"><span class="ln">62   </span></a>        <span class="s0">}</span>
+<a name="l63"><span class="ln">63   </span></a>        <span class="s0">is_inserted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l64"><span class="ln">64   </span></a>    <span class="s0">}</span>
+<a name="l65"><span class="ln">65   </span></a>
+<a name="l66"><span class="ln">66   </span></a>    <span class="s0">Edge *_insert_recursive(Edge *root, </span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l67"><span class="ln">67   </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l68"><span class="ln">68   </span></a>            <span class="s0">is_inserted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l69"><span class="ln">69   </span></a>            <span class="s2">return new </span><span class="s0">Edge(value);</span>
+<a name="l70"><span class="ln">70   </span></a>        <span class="s0">}</span>
+<a name="l71"><span class="ln">71   </span></a>        <span class="s2">if </span><span class="s0">(root-&gt;value == value) {</span>
+<a name="l72"><span class="ln">72   </span></a>            <span class="s0">is_inserted = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l73"><span class="ln">73   </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l74"><span class="ln">74   </span></a>        <span class="s0">}</span>
+<a name="l75"><span class="ln">75   </span></a>        <span class="s2">if </span><span class="s0">(value &lt; root-&gt;value) {</span>
+<a name="l76"><span class="ln">76   </span></a>            <span class="s0">root-&gt;left = _insert_recursive(root-&gt;left, value);</span>
+<a name="l77"><span class="ln">77   </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l78"><span class="ln">78   </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l79"><span class="ln">79   </span></a>            <span class="s0">root-&gt;right = _insert_recursive(root-&gt;right, value);</span>
+<a name="l80"><span class="ln">80   </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l81"><span class="ln">81   </span></a>        <span class="s0">}</span>
+<a name="l82"><span class="ln">82   </span></a>    <span class="s0">}</span>
+<a name="l83"><span class="ln">83   </span></a>
+<a name="l84"><span class="ln">84   </span></a>    <span class="s2">void </span><span class="s0">_insert_random_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l85"><span class="ln">85   </span></a>        <span class="s2">if </span><span class="s0">(rootTree == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l86"><span class="ln">86   </span></a>            <span class="s0">rootTree = </span><span class="s2">new </span><span class="s0">Edge(value);</span>
+<a name="l87"><span class="ln">87   </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l88"><span class="ln">88   </span></a>        <span class="s0">}</span>
+<a name="l89"><span class="ln">89   </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l90"><span class="ln">90   </span></a>        <span class="s0">q.push(rootTree);</span>
+<a name="l91"><span class="ln">91   </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l92"><span class="ln">92   </span></a>            <span class="s0">Edge *current = q.front();</span>
+<a name="l93"><span class="ln">93   </span></a>            <span class="s0">q.pop();</span>
+<a name="l94"><span class="ln">94   </span></a>            <span class="s2">if </span><span class="s0">(!current-&gt;left) {</span>
+<a name="l95"><span class="ln">95   </span></a>                <span class="s0">current-&gt;left = </span><span class="s2">new </span><span class="s0">Edge(value);</span>
+<a name="l96"><span class="ln">96   </span></a>                <span class="s2">return</span><span class="s0">;</span>
+<a name="l97"><span class="ln">97   </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l98"><span class="ln">98   </span></a>                <span class="s0">q.push(current-&gt;left);</span>
+<a name="l99"><span class="ln">99   </span></a>            <span class="s0">}</span>
+<a name="l100"><span class="ln">100  </span></a>            <span class="s2">if </span><span class="s0">(!current-&gt;right) {</span>
+<a name="l101"><span class="ln">101  </span></a>                <span class="s0">current-&gt;right = </span><span class="s2">new </span><span class="s0">Edge(value);</span>
+<a name="l102"><span class="ln">102  </span></a>                <span class="s2">return</span><span class="s0">;</span>
+<a name="l103"><span class="ln">103  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l104"><span class="ln">104  </span></a>                <span class="s0">q.push(current-&gt;right);</span>
+<a name="l105"><span class="ln">105  </span></a>            <span class="s0">}</span>
+<a name="l106"><span class="ln">106  </span></a>        <span class="s0">}</span>
+<a name="l107"><span class="ln">107  </span></a>    <span class="s0">}</span>
+<a name="l108"><span class="ln">108  </span></a>
+<a name="l109"><span class="ln">109  </span></a>    <span class="s1">/// helper functions for deletion</span>
+<a name="l110"><span class="ln">110  </span></a>
+<a name="l111"><span class="ln">111  </span></a>    <span class="s2">static </span><span class="s0">Edge *_max_value_in_left_sub_tree(Edge *node) {</span>
+<a name="l112"><span class="ln">112  </span></a>        <span class="s0">Edge *current = node;</span>
+<a name="l113"><span class="ln">113  </span></a>        <span class="s2">while </span><span class="s0">(current-&gt;right) {</span>
+<a name="l114"><span class="ln">114  </span></a>            <span class="s0">current = current-&gt;right;</span>
+<a name="l115"><span class="ln">115  </span></a>        <span class="s0">}</span>
+<a name="l116"><span class="ln">116  </span></a>        <span class="s2">return </span><span class="s0">current;</span>
+<a name="l117"><span class="ln">117  </span></a>    <span class="s0">}</span>
+<a name="l118"><span class="ln">118  </span></a>
+<a name="l119"><span class="ln">119  </span></a>    <span class="s2">static </span><span class="s0">Edge *_min_value_in_right_sub_tree(Edge *node) {</span>
+<a name="l120"><span class="ln">120  </span></a>        <span class="s0">Edge *current = node;</span>
+<a name="l121"><span class="ln">121  </span></a>        <span class="s2">while </span><span class="s0">(current-&gt;left) {</span>
+<a name="l122"><span class="ln">122  </span></a>            <span class="s0">current = current-&gt;left;</span>
+<a name="l123"><span class="ln">123  </span></a>        <span class="s0">}</span>
+<a name="l124"><span class="ln">124  </span></a>        <span class="s2">return </span><span class="s0">current;</span>
+<a name="l125"><span class="ln">125  </span></a>    <span class="s0">}</span>
+<a name="l126"><span class="ln">126  </span></a>
+<a name="l127"><span class="ln">127  </span></a>    <span class="s1">/// functions for AVL: insert and delete</span>
+<a name="l128"><span class="ln">128  </span></a>
+<a name="l129"><span class="ln">129  </span></a>    <span class="s2">static int </span><span class="s0">_height(Edge *node) {</span>
+<a name="l130"><span class="ln">130  </span></a>        <span class="s2">if </span><span class="s0">(node) { </span><span class="s1">// --&gt; node != null</span>
+<a name="l131"><span class="ln">131  </span></a>            <span class="s2">return </span><span class="s0">node-&gt;height;</span>
+<a name="l132"><span class="ln">132  </span></a>        <span class="s0">}</span>
+<a name="l133"><span class="ln">133  </span></a>        <span class="s2">return </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l134"><span class="ln">134  </span></a>    <span class="s0">};</span>
+<a name="l135"><span class="ln">135  </span></a>
+<a name="l136"><span class="ln">136  </span></a>    <span class="s2">static int </span><span class="s0">_get_balance(Edge *node) {</span>
+<a name="l137"><span class="ln">137  </span></a>        <span class="s2">if </span><span class="s0">(node) {</span>
+<a name="l138"><span class="ln">138  </span></a>            <span class="s2">return </span><span class="s0">_height(node-&gt;left) - _height(node-&gt;right);</span>
+<a name="l139"><span class="ln">139  </span></a>        <span class="s0">}</span>
+<a name="l140"><span class="ln">140  </span></a>        <span class="s2">return </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l141"><span class="ln">141  </span></a>    <span class="s0">}</span>
+<a name="l142"><span class="ln">142  </span></a>
+<a name="l143"><span class="ln">143  </span></a>    <span class="s2">static </span><span class="s0">Edge *_right_rotate(Edge *node) {</span>
+<a name="l144"><span class="ln">144  </span></a>        <span class="s0">Edge *left_node = node-&gt;left;</span>
+<a name="l145"><span class="ln">145  </span></a>        <span class="s0">Edge *right_of_left_node = left_node-&gt;right;</span>
+<a name="l146"><span class="ln">146  </span></a>
+<a name="l147"><span class="ln">147  </span></a>        <span class="s0">left_node-&gt;right = node;</span>
+<a name="l148"><span class="ln">148  </span></a>        <span class="s0">node-&gt;left = right_of_left_node;</span>
+<a name="l149"><span class="ln">149  </span></a>
+<a name="l150"><span class="ln">150  </span></a>        <span class="s0">node-&gt;height = _max(_height(node-&gt;left), _height(node-&gt;right)) + </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l151"><span class="ln">151  </span></a>        <span class="s0">left_node-&gt;height = _max(_height(left_node-&gt;left), _height(left_node-&gt;right)) + </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l152"><span class="ln">152  </span></a>
+<a name="l153"><span class="ln">153  </span></a>        <span class="s2">return </span><span class="s0">left_node;</span>
+<a name="l154"><span class="ln">154  </span></a>    <span class="s0">}</span>
+<a name="l155"><span class="ln">155  </span></a>
+<a name="l156"><span class="ln">156  </span></a>    <span class="s2">static </span><span class="s0">Edge *_left_rotate(Edge *node) {</span>
+<a name="l157"><span class="ln">157  </span></a>        <span class="s0">Edge *right_node = node-&gt;right;</span>
+<a name="l158"><span class="ln">158  </span></a>        <span class="s0">Edge *left_of_right_node = right_node-&gt;left;</span>
+<a name="l159"><span class="ln">159  </span></a>
+<a name="l160"><span class="ln">160  </span></a>        <span class="s0">right_node-&gt;left = node;</span>
+<a name="l161"><span class="ln">161  </span></a>        <span class="s0">node-&gt;right = left_of_right_node;</span>
+<a name="l162"><span class="ln">162  </span></a>
+<a name="l163"><span class="ln">163  </span></a>        <span class="s0">node-&gt;height = _max(_height(node-&gt;left), _height(node-&gt;right)) + </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l164"><span class="ln">164  </span></a>        <span class="s0">right_node-&gt;height = _max(_height(right_node-&gt;left), _height(right_node-&gt;right)) + </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l165"><span class="ln">165  </span></a>
+<a name="l166"><span class="ln">166  </span></a>        <span class="s2">return </span><span class="s0">right_node;</span>
+<a name="l167"><span class="ln">167  </span></a>    <span class="s0">}</span>
+<a name="l168"><span class="ln">168  </span></a>
+<a name="l169"><span class="ln">169  </span></a>    <span class="s0">Edge *_insert_using_avl_function_recursive(Edge *root, </span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l170"><span class="ln">170  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l171"><span class="ln">171  </span></a>            <span class="s2">return new </span><span class="s0">Edge(value);</span>
+<a name="l172"><span class="ln">172  </span></a>        <span class="s0">}</span>
+<a name="l173"><span class="ln">173  </span></a>        <span class="s2">if </span><span class="s0">(value &lt; root-&gt;value) {</span>
+<a name="l174"><span class="ln">174  </span></a>            <span class="s0">root-&gt;left = _insert_using_avl_function_recursive(root-&gt;left, value);</span>
+<a name="l175"><span class="ln">175  </span></a>        <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &gt; root-&gt;value) {</span>
+<a name="l176"><span class="ln">176  </span></a>            <span class="s0">root-&gt;right = _insert_using_avl_function_recursive(root-&gt;right, value);</span>
+<a name="l177"><span class="ln">177  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l178"><span class="ln">178  </span></a>            <span class="s1">// duplicates are not allowed</span>
+<a name="l179"><span class="ln">179  </span></a>            <span class="s0">is_inserted = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l180"><span class="ln">180  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l181"><span class="ln">181  </span></a>        <span class="s0">}</span>
+<a name="l182"><span class="ln">182  </span></a>        <span class="s0">root-&gt;height = </span><span class="s4">1 </span><span class="s0">+ _max(_height(root-&gt;left), _height(root-&gt;right));</span>
+<a name="l183"><span class="ln">183  </span></a>        <span class="s2">int </span><span class="s0">balance = _get_balance(root);</span>
+<a name="l184"><span class="ln">184  </span></a>
+<a name="l185"><span class="ln">185  </span></a>        <span class="s1">// there are 4 cases</span>
+<a name="l186"><span class="ln">186  </span></a>
+<a name="l187"><span class="ln">187  </span></a>        <span class="s1">// left left case</span>
+<a name="l188"><span class="ln">188  </span></a>        <span class="s2">if </span><span class="s0">(balance &gt; </span><span class="s4">1 </span><span class="s2">and </span><span class="s0">value &lt; root-&gt;left-&gt;value) {</span>
+<a name="l189"><span class="ln">189  </span></a>            <span class="s2">return </span><span class="s0">_right_rotate(root);</span>
+<a name="l190"><span class="ln">190  </span></a>        <span class="s0">}</span>
+<a name="l191"><span class="ln">191  </span></a>
+<a name="l192"><span class="ln">192  </span></a>        <span class="s1">// right right case</span>
+<a name="l193"><span class="ln">193  </span></a>        <span class="s2">if </span><span class="s0">(balance &lt; -</span><span class="s4">1 </span><span class="s2">and </span><span class="s0">value &gt; root-&gt;right-&gt;value) {</span>
+<a name="l194"><span class="ln">194  </span></a>            <span class="s2">return </span><span class="s0">_left_rotate(root);</span>
+<a name="l195"><span class="ln">195  </span></a>        <span class="s0">}</span>
+<a name="l196"><span class="ln">196  </span></a>
+<a name="l197"><span class="ln">197  </span></a>        <span class="s1">// left right case</span>
+<a name="l198"><span class="ln">198  </span></a>        <span class="s2">if </span><span class="s0">(balance &gt; </span><span class="s4">1 </span><span class="s2">and </span><span class="s0">value &gt; root-&gt;left-&gt;value) {</span>
+<a name="l199"><span class="ln">199  </span></a>            <span class="s0">root-&gt;left = _left_rotate(root-&gt;left);</span>
+<a name="l200"><span class="ln">200  </span></a>            <span class="s2">return </span><span class="s0">_right_rotate(root);</span>
+<a name="l201"><span class="ln">201  </span></a>        <span class="s0">}</span>
+<a name="l202"><span class="ln">202  </span></a>
+<a name="l203"><span class="ln">203  </span></a>        <span class="s1">// right left case</span>
+<a name="l204"><span class="ln">204  </span></a>        <span class="s2">if </span><span class="s0">(balance &lt; -</span><span class="s4">1 </span><span class="s2">and </span><span class="s0">value &lt; root-&gt;right-&gt;value) {</span>
+<a name="l205"><span class="ln">205  </span></a>            <span class="s0">root-&gt;right = _right_rotate(root-&gt;right);</span>
+<a name="l206"><span class="ln">206  </span></a>            <span class="s2">return </span><span class="s0">_left_rotate(root);</span>
+<a name="l207"><span class="ln">207  </span></a>        <span class="s0">}</span>
+<a name="l208"><span class="ln">208  </span></a>
+<a name="l209"><span class="ln">209  </span></a>        <span class="s2">return </span><span class="s0">root;</span>
+<a name="l210"><span class="ln">210  </span></a>    <span class="s0">}</span>
+<a name="l211"><span class="ln">211  </span></a>
+<a name="l212"><span class="ln">212  </span></a>    <span class="s0">Edge *_delete_value_and_get_successor_from_right_subtree_recursive(Edge *root, </span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l213"><span class="ln">213  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l214"><span class="ln">214  </span></a>            <span class="s1">// value not found</span>
+<a name="l215"><span class="ln">215  </span></a>            <span class="s0">is_deleted = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l216"><span class="ln">216  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l217"><span class="ln">217  </span></a>        <span class="s0">}</span>
+<a name="l218"><span class="ln">218  </span></a>        <span class="s2">if </span><span class="s0">(value &lt; root-&gt;value) {</span>
+<a name="l219"><span class="ln">219  </span></a>            <span class="s0">root-&gt;left = _delete_value_and_get_successor_from_right_subtree_recursive(root-&gt;left, value);</span>
+<a name="l220"><span class="ln">220  </span></a>        <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &gt; root-&gt;value) {</span>
+<a name="l221"><span class="ln">221  </span></a>            <span class="s0">root-&gt;right = _delete_value_and_get_successor_from_right_subtree_recursive(root-&gt;right, value);</span>
+<a name="l222"><span class="ln">222  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l223"><span class="ln">223  </span></a>            <span class="s1">// node with only one child or no child</span>
+<a name="l224"><span class="ln">224  </span></a>            <span class="s2">if </span><span class="s0">(root-&gt;left == </span><span class="s2">nullptr or </span><span class="s0">root-&gt;right == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l225"><span class="ln">225  </span></a>                <span class="s0">Edge *successor = root-&gt;left ? root-&gt;left : root-&gt;right;</span>
+<a name="l226"><span class="ln">226  </span></a>                <span class="s2">if </span><span class="s0">(successor == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l227"><span class="ln">227  </span></a>                    <span class="s1">// root is leaf</span>
+<a name="l228"><span class="ln">228  </span></a>                    <span class="s2">delete </span><span class="s0">root;</span>
+<a name="l229"><span class="ln">229  </span></a>                    <span class="s2">delete </span><span class="s0">successor;</span>
+<a name="l230"><span class="ln">230  </span></a>                    <span class="s0">root = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l231"><span class="ln">231  </span></a>                <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l232"><span class="ln">232  </span></a>                    <span class="s1">// root has one child</span>
+<a name="l233"><span class="ln">233  </span></a>                    <span class="s0">*root = *successor; </span><span class="s1">// copy content temp to root</span>
+<a name="l234"><span class="ln">234  </span></a>                <span class="s0">}</span>
+<a name="l235"><span class="ln">235  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l236"><span class="ln">236  </span></a>                <span class="s1">// node with tow children</span>
+<a name="l237"><span class="ln">237  </span></a>                <span class="s0">Edge *successor = _min_value_in_right_sub_tree(root-&gt;right);</span>
+<a name="l238"><span class="ln">238  </span></a>                <span class="s0">root-&gt;value = successor-&gt;value;</span>
+<a name="l239"><span class="ln">239  </span></a>                <span class="s0">root-&gt;right = _delete_value_and_get_successor_from_right_subtree_recursive(root-&gt;right, root-&gt;value);</span>
+<a name="l240"><span class="ln">240  </span></a>            <span class="s0">}</span>
+<a name="l241"><span class="ln">241  </span></a>        <span class="s0">}</span>
+<a name="l242"><span class="ln">242  </span></a>        <span class="s1">// If the tree had only one node</span>
+<a name="l243"><span class="ln">243  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l244"><span class="ln">244  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l245"><span class="ln">245  </span></a>        <span class="s0">}</span>
+<a name="l246"><span class="ln">246  </span></a>
+<a name="l247"><span class="ln">247  </span></a>        <span class="s0">root-&gt;height = </span><span class="s4">1 </span><span class="s0">+ _max(_height(root-&gt;left), _height(root-&gt;right));</span>
+<a name="l248"><span class="ln">248  </span></a>        <span class="s2">int </span><span class="s0">balance = _get_balance(root);</span>
+<a name="l249"><span class="ln">249  </span></a>
+<a name="l250"><span class="ln">250  </span></a>        <span class="s1">// there are 4 cases</span>
+<a name="l251"><span class="ln">251  </span></a>
+<a name="l252"><span class="ln">252  </span></a>        <span class="s1">// left left case</span>
+<a name="l253"><span class="ln">253  </span></a>        <span class="s2">if </span><span class="s0">(balance &gt; </span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;left) &gt;= </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l254"><span class="ln">254  </span></a>            <span class="s2">return </span><span class="s0">_right_rotate(root);</span>
+<a name="l255"><span class="ln">255  </span></a>        <span class="s0">}</span>
+<a name="l256"><span class="ln">256  </span></a>
+<a name="l257"><span class="ln">257  </span></a>        <span class="s1">// left right case</span>
+<a name="l258"><span class="ln">258  </span></a>        <span class="s2">if </span><span class="s0">(balance &gt; </span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;left) &lt; </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l259"><span class="ln">259  </span></a>            <span class="s0">root-&gt;left = _left_rotate(root-&gt;left);</span>
+<a name="l260"><span class="ln">260  </span></a>            <span class="s2">return </span><span class="s0">_right_rotate(root);</span>
+<a name="l261"><span class="ln">261  </span></a>        <span class="s0">}</span>
+<a name="l262"><span class="ln">262  </span></a>
+<a name="l263"><span class="ln">263  </span></a>        <span class="s1">// right right case</span>
+<a name="l264"><span class="ln">264  </span></a>        <span class="s2">if </span><span class="s0">(balance &lt; -</span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;right) &lt;= </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l265"><span class="ln">265  </span></a>            <span class="s2">return </span><span class="s0">_left_rotate(root);</span>
+<a name="l266"><span class="ln">266  </span></a>        <span class="s0">}</span>
+<a name="l267"><span class="ln">267  </span></a>
+<a name="l268"><span class="ln">268  </span></a>        <span class="s1">// right left case</span>
+<a name="l269"><span class="ln">269  </span></a>        <span class="s2">if </span><span class="s0">(balance &lt; -</span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;right) &gt; </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l270"><span class="ln">270  </span></a>            <span class="s0">root-&gt;right = _right_rotate(root-&gt;right);</span>
+<a name="l271"><span class="ln">271  </span></a>            <span class="s2">return </span><span class="s0">_left_rotate(root);</span>
+<a name="l272"><span class="ln">272  </span></a>        <span class="s0">}</span>
+<a name="l273"><span class="ln">273  </span></a>
+<a name="l274"><span class="ln">274  </span></a>        <span class="s2">return </span><span class="s0">root;</span>
+<a name="l275"><span class="ln">275  </span></a>    <span class="s0">}</span>
+<a name="l276"><span class="ln">276  </span></a>
+<a name="l277"><span class="ln">277  </span></a>    <span class="s0">Edge *_delete_value_and_get_successor_from_left_subtree_recursive(Edge *root, </span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l278"><span class="ln">278  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l279"><span class="ln">279  </span></a>            <span class="s1">// value not found</span>
+<a name="l280"><span class="ln">280  </span></a>            <span class="s0">is_deleted = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l281"><span class="ln">281  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l282"><span class="ln">282  </span></a>        <span class="s0">}</span>
+<a name="l283"><span class="ln">283  </span></a>        <span class="s2">if </span><span class="s0">(value &lt; root-&gt;value) {</span>
+<a name="l284"><span class="ln">284  </span></a>            <span class="s0">root-&gt;left = _delete_value_and_get_successor_from_left_subtree_recursive(root-&gt;left, value);</span>
+<a name="l285"><span class="ln">285  </span></a>        <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &gt; root-&gt;value) {</span>
+<a name="l286"><span class="ln">286  </span></a>            <span class="s0">root-&gt;right = _delete_value_and_get_successor_from_left_subtree_recursive(root-&gt;right, value);</span>
+<a name="l287"><span class="ln">287  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l288"><span class="ln">288  </span></a>            <span class="s1">// node with only one child or no child</span>
+<a name="l289"><span class="ln">289  </span></a>            <span class="s2">if </span><span class="s0">(root-&gt;left == </span><span class="s2">nullptr or </span><span class="s0">root-&gt;right == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l290"><span class="ln">290  </span></a>                <span class="s0">Edge *successor = root-&gt;left ? root-&gt;left : root-&gt;right;</span>
+<a name="l291"><span class="ln">291  </span></a>                <span class="s2">if </span><span class="s0">(successor == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l292"><span class="ln">292  </span></a>                    <span class="s1">// root is leaf</span>
+<a name="l293"><span class="ln">293  </span></a>                    <span class="s2">delete </span><span class="s0">root;</span>
+<a name="l294"><span class="ln">294  </span></a>                    <span class="s2">delete </span><span class="s0">successor;</span>
+<a name="l295"><span class="ln">295  </span></a>                    <span class="s0">root = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l296"><span class="ln">296  </span></a>                <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l297"><span class="ln">297  </span></a>                    <span class="s1">// root has one child</span>
+<a name="l298"><span class="ln">298  </span></a>                    <span class="s0">*root = *successor;</span>
+<a name="l299"><span class="ln">299  </span></a>                <span class="s0">}</span>
+<a name="l300"><span class="ln">300  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l301"><span class="ln">301  </span></a>                <span class="s1">// node with tow children</span>
+<a name="l302"><span class="ln">302  </span></a>                <span class="s0">Edge *successor = _max_value_in_left_sub_tree(root-&gt;left);</span>
+<a name="l303"><span class="ln">303  </span></a>                <span class="s0">root-&gt;value = successor-&gt;value;</span>
+<a name="l304"><span class="ln">304  </span></a>                <span class="s0">root-&gt;left = _delete_value_and_get_successor_from_left_subtree_recursive(root-&gt;left, root-&gt;value);</span>
+<a name="l305"><span class="ln">305  </span></a>            <span class="s0">}</span>
+<a name="l306"><span class="ln">306  </span></a>        <span class="s0">}</span>
+<a name="l307"><span class="ln">307  </span></a>        <span class="s1">// If the tree had only one node</span>
+<a name="l308"><span class="ln">308  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l309"><span class="ln">309  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l310"><span class="ln">310  </span></a>        <span class="s0">}</span>
+<a name="l311"><span class="ln">311  </span></a>
+<a name="l312"><span class="ln">312  </span></a>        <span class="s0">root-&gt;height = </span><span class="s4">1 </span><span class="s0">+ _max(_height(root-&gt;left), _height(root-&gt;right));</span>
+<a name="l313"><span class="ln">313  </span></a>        <span class="s2">int </span><span class="s0">balance = _get_balance(root);</span>
+<a name="l314"><span class="ln">314  </span></a>
+<a name="l315"><span class="ln">315  </span></a>        <span class="s1">// there are 4 cases</span>
+<a name="l316"><span class="ln">316  </span></a>
+<a name="l317"><span class="ln">317  </span></a>        <span class="s1">// left left case</span>
+<a name="l318"><span class="ln">318  </span></a>        <span class="s2">if </span><span class="s0">(balance &gt; </span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;left) &gt;= </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l319"><span class="ln">319  </span></a>            <span class="s2">return </span><span class="s0">_right_rotate(root);</span>
+<a name="l320"><span class="ln">320  </span></a>        <span class="s0">}</span>
+<a name="l321"><span class="ln">321  </span></a>
+<a name="l322"><span class="ln">322  </span></a>        <span class="s1">// left right case</span>
+<a name="l323"><span class="ln">323  </span></a>        <span class="s2">if </span><span class="s0">(balance &gt; </span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;left) &lt; </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l324"><span class="ln">324  </span></a>            <span class="s0">root-&gt;left = _left_rotate(root-&gt;left);</span>
+<a name="l325"><span class="ln">325  </span></a>            <span class="s2">return </span><span class="s0">_right_rotate(root);</span>
+<a name="l326"><span class="ln">326  </span></a>        <span class="s0">}</span>
+<a name="l327"><span class="ln">327  </span></a>
+<a name="l328"><span class="ln">328  </span></a>        <span class="s1">// right right case</span>
+<a name="l329"><span class="ln">329  </span></a>        <span class="s2">if </span><span class="s0">(balance &lt; -</span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;right) &lt;= </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l330"><span class="ln">330  </span></a>            <span class="s2">return </span><span class="s0">_left_rotate(root);</span>
+<a name="l331"><span class="ln">331  </span></a>        <span class="s0">}</span>
+<a name="l332"><span class="ln">332  </span></a>
+<a name="l333"><span class="ln">333  </span></a>        <span class="s1">// right left case</span>
+<a name="l334"><span class="ln">334  </span></a>        <span class="s2">if </span><span class="s0">(balance &lt; -</span><span class="s4">1 </span><span class="s2">and </span><span class="s0">_get_balance(root-&gt;right) &gt; </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l335"><span class="ln">335  </span></a>            <span class="s0">root-&gt;right = _right_rotate(root-&gt;right);</span>
+<a name="l336"><span class="ln">336  </span></a>            <span class="s2">return </span><span class="s0">_left_rotate(root);</span>
+<a name="l337"><span class="ln">337  </span></a>        <span class="s0">}</span>
+<a name="l338"><span class="ln">338  </span></a>
+<a name="l339"><span class="ln">339  </span></a>        <span class="s2">return </span><span class="s0">root;</span>
+<a name="l340"><span class="ln">340  </span></a>    <span class="s0">}</span>
+<a name="l341"><span class="ln">341  </span></a>
+<a name="l342"><span class="ln">342  </span></a>    <span class="s2">void </span><span class="s0">_convert_to_avl(Edge *root, Edge *&amp;new_root) {</span>
+<a name="l343"><span class="ln">343  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l344"><span class="ln">344  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l345"><span class="ln">345  </span></a>        <span class="s0">}</span>
+<a name="l346"><span class="ln">346  </span></a>        <span class="s1">// in order traversal, you can use post or pre traversal</span>
+<a name="l347"><span class="ln">347  </span></a>        <span class="s0">_convert_to_avl(root-&gt;left, new_root);</span>
+<a name="l348"><span class="ln">348  </span></a>        <span class="s0">new_root = _insert_using_avl_function_recursive(new_root, root-&gt;value);</span>
+<a name="l349"><span class="ln">349  </span></a>        <span class="s0">_convert_to_avl(root-&gt;right, new_root);</span>
+<a name="l350"><span class="ln">350  </span></a>    <span class="s0">}</span>
+<a name="l351"><span class="ln">351  </span></a>
+<a name="l352"><span class="ln">352  </span></a>    <span class="s1">/// functions for delete iterative</span>
+<a name="l353"><span class="ln">353  </span></a>
+<a name="l354"><span class="ln">354  </span></a>    <span class="s2">void </span><span class="s0">_delete_value_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l355"><span class="ln">355  </span></a>        <span class="s0">Edge *parent = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l356"><span class="ln">356  </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l357"><span class="ln">357  </span></a>        <span class="s1">// search for node to delete it</span>
+<a name="l358"><span class="ln">358  </span></a>        <span class="s2">while </span><span class="s0">(current) {</span>
+<a name="l359"><span class="ln">359  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;value == value) {</span>
+<a name="l360"><span class="ln">360  </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l361"><span class="ln">361  </span></a>            <span class="s0">}</span>
+<a name="l362"><span class="ln">362  </span></a>            <span class="s0">parent = current;</span>
+<a name="l363"><span class="ln">363  </span></a>            <span class="s2">if </span><span class="s0">(value &lt; current-&gt;value) {</span>
+<a name="l364"><span class="ln">364  </span></a>                <span class="s0">current = current-&gt;left;</span>
+<a name="l365"><span class="ln">365  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l366"><span class="ln">366  </span></a>                <span class="s0">current = current-&gt;right;</span>
+<a name="l367"><span class="ln">367  </span></a>            <span class="s0">}</span>
+<a name="l368"><span class="ln">368  </span></a>        <span class="s0">}</span>
+<a name="l369"><span class="ln">369  </span></a>        <span class="s2">if </span><span class="s0">(current == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l370"><span class="ln">370  </span></a>            <span class="s1">// value not found</span>
+<a name="l371"><span class="ln">371  </span></a>            <span class="s0">is_deleted = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l372"><span class="ln">372  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l373"><span class="ln">373  </span></a>        <span class="s0">}</span>
+<a name="l374"><span class="ln">374  </span></a>        <span class="s1">// node with only one child or no child</span>
+<a name="l375"><span class="ln">375  </span></a>        <span class="s2">if </span><span class="s0">(current-&gt;left == </span><span class="s2">nullptr or </span><span class="s0">current-&gt;right == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l376"><span class="ln">376  </span></a>            <span class="s0">Edge *successor = current-&gt;left ? current-&gt;left : current-&gt;right;</span>
+<a name="l377"><span class="ln">377  </span></a>            <span class="s2">if </span><span class="s0">(successor == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l378"><span class="ln">378  </span></a>                <span class="s1">// node is leaf, no children</span>
+<a name="l379"><span class="ln">379  </span></a>                <span class="s2">delete </span><span class="s0">successor;</span>
+<a name="l380"><span class="ln">380  </span></a>                <span class="s2">if </span><span class="s0">(current == rootTree) {</span>
+<a name="l381"><span class="ln">381  </span></a>                    <span class="s2">delete </span><span class="s0">rootTree;</span>
+<a name="l382"><span class="ln">382  </span></a>                    <span class="s0">rootTree = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l383"><span class="ln">383  </span></a>                <span class="s0">} </span><span class="s2">else if </span><span class="s0">(current == parent-&gt;left) {</span>
+<a name="l384"><span class="ln">384  </span></a>                    <span class="s2">delete </span><span class="s0">parent-&gt;left;</span>
+<a name="l385"><span class="ln">385  </span></a>                    <span class="s0">parent-&gt;left = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l386"><span class="ln">386  </span></a>                <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l387"><span class="ln">387  </span></a>                    <span class="s2">delete </span><span class="s0">parent-&gt;right;</span>
+<a name="l388"><span class="ln">388  </span></a>                    <span class="s0">parent-&gt;right = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l389"><span class="ln">389  </span></a>                <span class="s0">}</span>
+<a name="l390"><span class="ln">390  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l391"><span class="ln">391  </span></a>                <span class="s1">// node has one child</span>
+<a name="l392"><span class="ln">392  </span></a>                <span class="s0">*current = *successor; </span><span class="s1">// copy content successor to current</span>
+<a name="l393"><span class="ln">393  </span></a>                <span class="s2">delete </span><span class="s0">successor;</span>
+<a name="l394"><span class="ln">394  </span></a>            <span class="s0">}</span>
+<a name="l395"><span class="ln">395  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l396"><span class="ln">396  </span></a>            <span class="s1">// If the node to be deleted has two children</span>
+<a name="l397"><span class="ln">397  </span></a>            <span class="s0">_delete_and_get_node_from_right_sub_tree(current);</span>
+<a name="l398"><span class="ln">398  </span></a><span class="s1">//            _delete_and_get_node_from_left_sub_tree(current);</span>
+<a name="l399"><span class="ln">399  </span></a>        <span class="s0">}</span>
+<a name="l400"><span class="ln">400  </span></a>        <span class="s0">is_deleted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l401"><span class="ln">401  </span></a>    <span class="s0">}</span>
+<a name="l402"><span class="ln">402  </span></a>
+<a name="l403"><span class="ln">403  </span></a>    <span class="s2">static void </span><span class="s0">_delete_and_get_node_from_right_sub_tree(Edge *current) {</span>
+<a name="l404"><span class="ln">404  </span></a>        <span class="s1">// find successor from right sub tree</span>
+<a name="l405"><span class="ln">405  </span></a>        <span class="s0">Edge *parent = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l406"><span class="ln">406  </span></a>        <span class="s0">Edge *successor = current-&gt;right;</span>
+<a name="l407"><span class="ln">407  </span></a>        <span class="s2">while </span><span class="s0">(successor-&gt;left) {</span>
+<a name="l408"><span class="ln">408  </span></a>            <span class="s0">parent = successor;</span>
+<a name="l409"><span class="ln">409  </span></a>            <span class="s0">successor = successor-&gt;left;</span>
+<a name="l410"><span class="ln">410  </span></a>        <span class="s0">}</span>
+<a name="l411"><span class="ln">411  </span></a>        <span class="s0">current-&gt;value = successor-&gt;value;</span>
+<a name="l412"><span class="ln">412  </span></a>        <span class="s2">if </span><span class="s0">(parent) {</span>
+<a name="l413"><span class="ln">413  </span></a>            <span class="s1">// maybe successor-&gt;right: nullptr or it has child from right</span>
+<a name="l414"><span class="ln">414  </span></a>            <span class="s0">parent-&gt;left = successor-&gt;right;</span>
+<a name="l415"><span class="ln">415  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l416"><span class="ln">416  </span></a>            <span class="s0">current-&gt;right = successor-&gt;right;</span>
+<a name="l417"><span class="ln">417  </span></a>        <span class="s0">}</span>
+<a name="l418"><span class="ln">418  </span></a>        <span class="s2">delete </span><span class="s0">successor;</span>
+<a name="l419"><span class="ln">419  </span></a>    <span class="s0">}</span>
+<a name="l420"><span class="ln">420  </span></a>
+<a name="l421"><span class="ln">421  </span></a>    <span class="s2">static void </span><span class="s0">_delete_and_get_node_from_left_sub_tree(Edge *current) {</span>
+<a name="l422"><span class="ln">422  </span></a>        <span class="s1">// find successor from left sub tree</span>
+<a name="l423"><span class="ln">423  </span></a>        <span class="s0">cout &lt;&lt; current-&gt;value &lt;&lt; endl;</span>
+<a name="l424"><span class="ln">424  </span></a>        <span class="s0">Edge *parent = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l425"><span class="ln">425  </span></a>        <span class="s0">Edge *successor = current-&gt;left;</span>
+<a name="l426"><span class="ln">426  </span></a>        <span class="s2">while </span><span class="s0">(successor-&gt;right) {</span>
+<a name="l427"><span class="ln">427  </span></a>            <span class="s0">parent = successor;</span>
+<a name="l428"><span class="ln">428  </span></a>            <span class="s0">successor = successor-&gt;right;</span>
+<a name="l429"><span class="ln">429  </span></a>        <span class="s0">}</span>
+<a name="l430"><span class="ln">430  </span></a>        <span class="s0">current-&gt;value = successor-&gt;value;</span>
+<a name="l431"><span class="ln">431  </span></a>        <span class="s2">if </span><span class="s0">(parent) {</span>
+<a name="l432"><span class="ln">432  </span></a>            <span class="s1">// maybe successor-&gt;left: nullptr or it has child from left</span>
+<a name="l433"><span class="ln">433  </span></a>            <span class="s0">parent-&gt;right = successor-&gt;left;</span>
+<a name="l434"><span class="ln">434  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l435"><span class="ln">435  </span></a>            <span class="s0">current-&gt;left = successor-&gt;left;</span>
+<a name="l436"><span class="ln">436  </span></a>        <span class="s0">}</span>
+<a name="l437"><span class="ln">437  </span></a>        <span class="s2">delete </span><span class="s0">successor;</span>
+<a name="l438"><span class="ln">438  </span></a>    <span class="s0">}</span>
+<a name="l439"><span class="ln">439  </span></a>
+<a name="l440"><span class="ln">440  </span></a>    <span class="s1">/// functions for delete recursive</span>
+<a name="l441"><span class="ln">441  </span></a>
+<a name="l442"><span class="ln">442  </span></a>    <span class="s0">Edge *_delete_value_recursive(Edge *root, </span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l443"><span class="ln">443  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l444"><span class="ln">444  </span></a>            <span class="s1">// value not found</span>
+<a name="l445"><span class="ln">445  </span></a>            <span class="s0">is_deleted = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l446"><span class="ln">446  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l447"><span class="ln">447  </span></a>        <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &lt; root-&gt;value) {</span>
+<a name="l448"><span class="ln">448  </span></a>            <span class="s0">root-&gt;left = _delete_value_recursive(root-&gt;left, value);</span>
+<a name="l449"><span class="ln">449  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l450"><span class="ln">450  </span></a>        <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &gt; root-&gt;value) {</span>
+<a name="l451"><span class="ln">451  </span></a>            <span class="s0">root-&gt;right = _delete_value_recursive(root-&gt;right, value);</span>
+<a name="l452"><span class="ln">452  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l453"><span class="ln">453  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l454"><span class="ln">454  </span></a>            <span class="s2">if </span><span class="s0">(root-&gt;left == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l455"><span class="ln">455  </span></a>                <span class="s0">is_deleted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l456"><span class="ln">456  </span></a>                <span class="s2">return </span><span class="s0">root-&gt;right;</span>
+<a name="l457"><span class="ln">457  </span></a>            <span class="s0">} </span><span class="s2">else if </span><span class="s0">(root-&gt;right == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l458"><span class="ln">458  </span></a>                <span class="s0">is_deleted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l459"><span class="ln">459  </span></a>                <span class="s2">return </span><span class="s0">root-&gt;left;</span>
+<a name="l460"><span class="ln">460  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l461"><span class="ln">461  </span></a>                <span class="s0">is_deleted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l462"><span class="ln">462  </span></a><span class="s1">//                Edge *temp = _max_value_in_left_sub_tree(root-&gt;left);</span>
+<a name="l463"><span class="ln">463  </span></a><span class="s1">//                root-&gt;value = temp-&gt;value;</span>
+<a name="l464"><span class="ln">464  </span></a><span class="s1">//                root-&gt;left = _delete_value_recursive(root-&gt;left, temp-&gt;value);</span>
+<a name="l465"><span class="ln">465  </span></a><span class="s1">//                return root;</span>
+<a name="l466"><span class="ln">466  </span></a><span class="s1">//                =====================================================//</span>
+<a name="l467"><span class="ln">467  </span></a>                <span class="s0">Edge *temp = _min_value_in_right_sub_tree(root-&gt;right);</span>
+<a name="l468"><span class="ln">468  </span></a>                <span class="s0">root-&gt;value = temp-&gt;value;</span>
+<a name="l469"><span class="ln">469  </span></a>                <span class="s0">root-&gt;right = _delete_value_recursive(root-&gt;right, temp-&gt;value);</span>
+<a name="l470"><span class="ln">470  </span></a>                <span class="s2">return </span><span class="s0">root;</span>
+<a name="l471"><span class="ln">471  </span></a>            <span class="s0">}</span>
+<a name="l472"><span class="ln">472  </span></a>        <span class="s0">}</span>
+<a name="l473"><span class="ln">473  </span></a>    <span class="s0">}</span>
+<a name="l474"><span class="ln">474  </span></a>
+<a name="l475"><span class="ln">475  </span></a>    <span class="s1">/// functions for search</span>
+<a name="l476"><span class="ln">476  </span></a>
+<a name="l477"><span class="ln">477  </span></a>    <span class="s0">Edge *_search_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value, </span><span class="s2">int </span><span class="s0">&amp;level_node) {</span>
+<a name="l478"><span class="ln">478  </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l479"><span class="ln">479  </span></a>        <span class="s2">while </span><span class="s0">(current) {</span>
+<a name="l480"><span class="ln">480  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;value == value) {</span>
+<a name="l481"><span class="ln">481  </span></a>                <span class="s2">return </span><span class="s0">current;</span>
+<a name="l482"><span class="ln">482  </span></a>            <span class="s0">}</span>
+<a name="l483"><span class="ln">483  </span></a>            <span class="s0">level_node++;</span>
+<a name="l484"><span class="ln">484  </span></a>            <span class="s2">if </span><span class="s0">(value &lt; current-&gt;value) {</span>
+<a name="l485"><span class="ln">485  </span></a>                <span class="s0">current = current-&gt;left;</span>
+<a name="l486"><span class="ln">486  </span></a>            <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &gt; current-&gt;value) {</span>
+<a name="l487"><span class="ln">487  </span></a>                <span class="s0">current = current-&gt;right;</span>
+<a name="l488"><span class="ln">488  </span></a>            <span class="s0">}</span>
+<a name="l489"><span class="ln">489  </span></a>        <span class="s0">}</span>
+<a name="l490"><span class="ln">490  </span></a>        <span class="s2">return nullptr</span><span class="s0">;</span>
+<a name="l491"><span class="ln">491  </span></a>    <span class="s0">}</span>
+<a name="l492"><span class="ln">492  </span></a>
+<a name="l493"><span class="ln">493  </span></a>    <span class="s0">Edge *_search_recursive(Edge *root, </span><span class="s2">const </span><span class="s0">myType &amp;value, </span><span class="s2">int </span><span class="s0">&amp;level_node) {</span>
+<a name="l494"><span class="ln">494  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l495"><span class="ln">495  </span></a>            <span class="s1">// value not found</span>
+<a name="l496"><span class="ln">496  </span></a>            <span class="s2">return nullptr</span><span class="s0">;</span>
+<a name="l497"><span class="ln">497  </span></a>        <span class="s0">} </span><span class="s2">else if </span><span class="s0">(root-&gt;value == value) {</span>
+<a name="l498"><span class="ln">498  </span></a>            <span class="s2">return </span><span class="s0">root;</span>
+<a name="l499"><span class="ln">499  </span></a>        <span class="s0">} </span><span class="s2">else if </span><span class="s0">(value &lt; root-&gt;value) {</span>
+<a name="l500"><span class="ln">500  </span></a>            <span class="s0">level_node++;</span>
+<a name="l501"><span class="ln">501  </span></a>            <span class="s2">return </span><span class="s0">_search_recursive(root-&gt;left, value, level_node);</span>
+<a name="l502"><span class="ln">502  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l503"><span class="ln">503  </span></a>            <span class="s0">level_node++;</span>
+<a name="l504"><span class="ln">504  </span></a>            <span class="s2">return </span><span class="s0">_search_recursive(root-&gt;right, value, level_node);</span>
+<a name="l505"><span class="ln">505  </span></a>        <span class="s0">}</span>
+<a name="l506"><span class="ln">506  </span></a>    <span class="s0">}</span>
+<a name="l507"><span class="ln">507  </span></a>
+<a name="l508"><span class="ln">508  </span></a>    <span class="s1">/// functions for traversals algorithm</span>
+<a name="l509"><span class="ln">509  </span></a>
+<a name="l510"><span class="ln">510  </span></a>    <span class="s2">void </span><span class="s0">_pre_order_recursive(Edge *root) {</span>
+<a name="l511"><span class="ln">511  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l512"><span class="ln">512  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l513"><span class="ln">513  </span></a>        <span class="s0">}</span>
+<a name="l514"><span class="ln">514  </span></a>        <span class="s0">cout &lt;&lt; root-&gt;value &lt;&lt; </span><span class="s3">' '</span><span class="s0">;</span>
+<a name="l515"><span class="ln">515  </span></a>        <span class="s0">_pre_order_recursive(root-&gt;left);</span>
+<a name="l516"><span class="ln">516  </span></a>        <span class="s0">_pre_order_recursive(root-&gt;right);</span>
+<a name="l517"><span class="ln">517  </span></a>    <span class="s0">}</span>
+<a name="l518"><span class="ln">518  </span></a>
+<a name="l519"><span class="ln">519  </span></a>    <span class="s2">void </span><span class="s0">_in_order_recursive(Edge *root) {</span>
+<a name="l520"><span class="ln">520  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l521"><span class="ln">521  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l522"><span class="ln">522  </span></a>        <span class="s0">}</span>
+<a name="l523"><span class="ln">523  </span></a>        <span class="s0">_in_order_recursive(root-&gt;left);</span>
+<a name="l524"><span class="ln">524  </span></a>        <span class="s0">cout &lt;&lt; root-&gt;value &lt;&lt; </span><span class="s3">' '</span><span class="s0">;</span>
+<a name="l525"><span class="ln">525  </span></a>        <span class="s0">_in_order_recursive(root-&gt;right);</span>
+<a name="l526"><span class="ln">526  </span></a>    <span class="s0">}</span>
+<a name="l527"><span class="ln">527  </span></a>
+<a name="l528"><span class="ln">528  </span></a>    <span class="s2">void </span><span class="s0">_post_order_recursive(Edge *root) {</span>
+<a name="l529"><span class="ln">529  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l530"><span class="ln">530  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l531"><span class="ln">531  </span></a>        <span class="s0">}</span>
+<a name="l532"><span class="ln">532  </span></a>        <span class="s0">_post_order_recursive(root-&gt;left);</span>
+<a name="l533"><span class="ln">533  </span></a>        <span class="s0">_post_order_recursive(root-&gt;right);</span>
+<a name="l534"><span class="ln">534  </span></a>        <span class="s0">cout &lt;&lt; root-&gt;value &lt;&lt; </span><span class="s3">' '</span><span class="s0">;</span>
+<a name="l535"><span class="ln">535  </span></a>    <span class="s0">}</span>
+<a name="l536"><span class="ln">536  </span></a>
+<a name="l537"><span class="ln">537  </span></a>    <span class="s1">/// functions for tree attributes</span>
+<a name="l538"><span class="ln">538  </span></a>
+<a name="l539"><span class="ln">539  </span></a>    <span class="s2">bool </span><span class="s0">_is_linear_from_left_iterative() {</span>
+<a name="l540"><span class="ln">540  </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l541"><span class="ln">541  </span></a>        <span class="s2">if </span><span class="s0">(current-&gt;left </span><span class="s2">and </span><span class="s0">current-&gt;right) {</span>
+<a name="l542"><span class="ln">542  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l543"><span class="ln">543  </span></a>        <span class="s0">}</span>
+<a name="l544"><span class="ln">544  </span></a>        <span class="s2">if </span><span class="s0">(current-&gt;left </span><span class="s2">and </span><span class="s0">!current-&gt;right) {</span>
+<a name="l545"><span class="ln">545  </span></a>            <span class="s2">while </span><span class="s0">(current-&gt;left) {</span>
+<a name="l546"><span class="ln">546  </span></a>                <span class="s0">current = current-&gt;left;</span>
+<a name="l547"><span class="ln">547  </span></a>                <span class="s2">if </span><span class="s0">(current-&gt;right) {</span>
+<a name="l548"><span class="ln">548  </span></a>                    <span class="s2">return false</span><span class="s0">;</span>
+<a name="l549"><span class="ln">549  </span></a>                <span class="s0">}</span>
+<a name="l550"><span class="ln">550  </span></a>            <span class="s0">}</span>
+<a name="l551"><span class="ln">551  </span></a>            <span class="s2">return true</span><span class="s0">;</span>
+<a name="l552"><span class="ln">552  </span></a>        <span class="s0">}</span>
+<a name="l553"><span class="ln">553  </span></a>        <span class="s2">return false</span><span class="s0">;</span>
+<a name="l554"><span class="ln">554  </span></a>    <span class="s0">}</span>
+<a name="l555"><span class="ln">555  </span></a>
+<a name="l556"><span class="ln">556  </span></a>    <span class="s2">bool </span><span class="s0">_is_linear_from_right_iterative() {</span>
+<a name="l557"><span class="ln">557  </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l558"><span class="ln">558  </span></a>        <span class="s2">if </span><span class="s0">(current-&gt;left </span><span class="s2">and </span><span class="s0">current-&gt;right) {</span>
+<a name="l559"><span class="ln">559  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l560"><span class="ln">560  </span></a>        <span class="s0">}</span>
+<a name="l561"><span class="ln">561  </span></a>        <span class="s2">if </span><span class="s0">(!current-&gt;left </span><span class="s2">and </span><span class="s0">current-&gt;right) {</span>
+<a name="l562"><span class="ln">562  </span></a>            <span class="s2">while </span><span class="s0">(current-&gt;right) {</span>
+<a name="l563"><span class="ln">563  </span></a>                <span class="s0">current = current-&gt;right;</span>
+<a name="l564"><span class="ln">564  </span></a>                <span class="s2">if </span><span class="s0">(current-&gt;left) {</span>
+<a name="l565"><span class="ln">565  </span></a>                    <span class="s2">return false</span><span class="s0">;</span>
+<a name="l566"><span class="ln">566  </span></a>                <span class="s0">}</span>
+<a name="l567"><span class="ln">567  </span></a>            <span class="s0">}</span>
+<a name="l568"><span class="ln">568  </span></a>            <span class="s2">return true</span><span class="s0">;</span>
+<a name="l569"><span class="ln">569  </span></a>        <span class="s0">}</span>
+<a name="l570"><span class="ln">570  </span></a>        <span class="s2">return false</span><span class="s0">;</span>
+<a name="l571"><span class="ln">571  </span></a>    <span class="s0">}</span>
+<a name="l572"><span class="ln">572  </span></a>
+<a name="l573"><span class="ln">573  </span></a>    <span class="s2">bool </span><span class="s0">_is_complete_iterative() {</span>
+<a name="l574"><span class="ln">574  </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l575"><span class="ln">575  </span></a>        <span class="s0">q.emplace(rootTree);</span>
+<a name="l576"><span class="ln">576  </span></a>        <span class="s2">bool </span><span class="s0">check_to_pointer_is_null = </span><span class="s2">false</span><span class="s0">;</span>
+<a name="l577"><span class="ln">577  </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l578"><span class="ln">578  </span></a>            <span class="s0">Edge *current = q.front();</span>
+<a name="l579"><span class="ln">579  </span></a>            <span class="s0">q.pop();</span>
+<a name="l580"><span class="ln">580  </span></a>            <span class="s2">if </span><span class="s0">(check_to_pointer_is_null </span><span class="s2">and </span><span class="s0">current) {</span>
+<a name="l581"><span class="ln">581  </span></a>                <span class="s2">return false</span><span class="s0">;</span>
+<a name="l582"><span class="ln">582  </span></a>            <span class="s0">}</span>
+<a name="l583"><span class="ln">583  </span></a>            <span class="s2">if </span><span class="s0">(current) {</span>
+<a name="l584"><span class="ln">584  </span></a>                <span class="s0">q.emplace(current-&gt;left);</span>
+<a name="l585"><span class="ln">585  </span></a>                <span class="s0">q.emplace(current-&gt;right);</span>
+<a name="l586"><span class="ln">586  </span></a>            <span class="s0">}</span>
+<a name="l587"><span class="ln">587  </span></a>            <span class="s2">if </span><span class="s0">(!current) {</span>
+<a name="l588"><span class="ln">588  </span></a>                <span class="s0">check_to_pointer_is_null = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l589"><span class="ln">589  </span></a>            <span class="s0">}</span>
+<a name="l590"><span class="ln">590  </span></a>        <span class="s0">}</span>
+<a name="l591"><span class="ln">591  </span></a>        <span class="s2">return true</span><span class="s0">;</span>
+<a name="l592"><span class="ln">592  </span></a>    <span class="s0">}</span>
+<a name="l593"><span class="ln">593  </span></a>
+<a name="l594"><span class="ln">594  </span></a>    <span class="s2">bool </span><span class="s0">_is_complete_recursive(Edge *root, </span><span class="s2">int </span><span class="s0">index, </span><span class="s2">int </span><span class="s0">&amp;number_nodes) {</span>
+<a name="l595"><span class="ln">595  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l596"><span class="ln">596  </span></a>            <span class="s2">return true</span><span class="s0">;</span>
+<a name="l597"><span class="ln">597  </span></a>        <span class="s0">}</span>
+<a name="l598"><span class="ln">598  </span></a>        <span class="s2">if </span><span class="s0">(index &gt;= number_nodes) {</span>
+<a name="l599"><span class="ln">599  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l600"><span class="ln">600  </span></a>        <span class="s0">}</span>
+<a name="l601"><span class="ln">601  </span></a>        <span class="s2">return </span><span class="s0">(_is_complete_recursive(root-&gt;left, </span><span class="s4">2 </span><span class="s0">* index + </span><span class="s4">1</span><span class="s0">, number_nodes) </span><span class="s2">and</span>
+<a name="l602"><span class="ln">602  </span></a>                <span class="s0">_is_complete_recursive(root-&gt;right, </span><span class="s4">2 </span><span class="s0">* index + </span><span class="s4">2</span><span class="s0">, number_nodes));</span>
+<a name="l603"><span class="ln">603  </span></a>    <span class="s0">}</span>
+<a name="l604"><span class="ln">604  </span></a>
+<a name="l605"><span class="ln">605  </span></a>    <span class="s2">bool </span><span class="s0">_is_full_iterative() {</span>
+<a name="l606"><span class="ln">606  </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l607"><span class="ln">607  </span></a>        <span class="s0">q.emplace(rootTree);</span>
+<a name="l608"><span class="ln">608  </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l609"><span class="ln">609  </span></a>            <span class="s0">Edge *current = q.front();</span>
+<a name="l610"><span class="ln">610  </span></a>            <span class="s0">q.pop();</span>
+<a name="l611"><span class="ln">611  </span></a>            <span class="s2">if </span><span class="s0">(!current-&gt;left </span><span class="s2">and </span><span class="s0">current-&gt;right) {</span>
+<a name="l612"><span class="ln">612  </span></a>                <span class="s2">return false</span><span class="s0">;</span>
+<a name="l613"><span class="ln">613  </span></a>            <span class="s0">}</span>
+<a name="l614"><span class="ln">614  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;left </span><span class="s2">and </span><span class="s0">!current-&gt;right) {</span>
+<a name="l615"><span class="ln">615  </span></a>                <span class="s2">return false</span><span class="s0">;</span>
+<a name="l616"><span class="ln">616  </span></a>            <span class="s0">}</span>
+<a name="l617"><span class="ln">617  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;left) {</span>
+<a name="l618"><span class="ln">618  </span></a>                <span class="s0">q.emplace(current-&gt;left);</span>
+<a name="l619"><span class="ln">619  </span></a>            <span class="s0">}</span>
+<a name="l620"><span class="ln">620  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;right) {</span>
+<a name="l621"><span class="ln">621  </span></a>                <span class="s0">q.emplace(current-&gt;right);</span>
+<a name="l622"><span class="ln">622  </span></a>            <span class="s0">}</span>
+<a name="l623"><span class="ln">623  </span></a>        <span class="s0">}</span>
+<a name="l624"><span class="ln">624  </span></a>        <span class="s2">return true</span><span class="s0">;</span>
+<a name="l625"><span class="ln">625  </span></a>    <span class="s0">}</span>
+<a name="l626"><span class="ln">626  </span></a>
+<a name="l627"><span class="ln">627  </span></a>    <span class="s2">bool </span><span class="s0">_is_full_recursive(Edge *root) {</span>
+<a name="l628"><span class="ln">628  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l629"><span class="ln">629  </span></a>            <span class="s2">return true</span><span class="s0">;</span>
+<a name="l630"><span class="ln">630  </span></a>        <span class="s0">}</span>
+<a name="l631"><span class="ln">631  </span></a>        <span class="s2">if </span><span class="s0">(root-&gt;left </span><span class="s2">and </span><span class="s0">!root-&gt;right) {</span>
+<a name="l632"><span class="ln">632  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l633"><span class="ln">633  </span></a>        <span class="s0">}</span>
+<a name="l634"><span class="ln">634  </span></a>        <span class="s2">if </span><span class="s0">(!root-&gt;left </span><span class="s2">and </span><span class="s0">root-&gt;right) {</span>
+<a name="l635"><span class="ln">635  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l636"><span class="ln">636  </span></a>        <span class="s0">}</span>
+<a name="l637"><span class="ln">637  </span></a>        <span class="s2">return </span><span class="s0">_is_full_recursive(root-&gt;left) </span><span class="s2">and </span><span class="s0">_is_full_recursive(root-&gt;right);</span>
+<a name="l638"><span class="ln">638  </span></a>    <span class="s0">}</span>
+<a name="l639"><span class="ln">639  </span></a>
+<a name="l640"><span class="ln">640  </span></a>    <span class="s2">bool </span><span class="s0">_is_perfect() {</span>
+<a name="l641"><span class="ln">641  </span></a>        <span class="s2">int </span><span class="s0">count_level = _count_levels_from_node_to_bottom_recursive(rootTree);</span>
+<a name="l642"><span class="ln">642  </span></a>        <span class="s2">int </span><span class="s0">original_count_nodes = _power(</span><span class="s4">2</span><span class="s0">, count_level) - </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l643"><span class="ln">643  </span></a>        <span class="s2">return </span><span class="s0">count_nodes == original_count_nodes;</span>
+<a name="l644"><span class="ln">644  </span></a>    <span class="s0">}</span>
+<a name="l645"><span class="ln">645  </span></a>
+<a name="l646"><span class="ln">646  </span></a>    <span class="s1">/// functions to check if is BST</span>
+<a name="l647"><span class="ln">647  </span></a>
+<a name="l648"><span class="ln">648  </span></a>    <span class="s0">myType _min_value_in_subtree(Edge *node) {</span>
+<a name="l649"><span class="ln">649  </span></a>        <span class="s2">if </span><span class="s0">(node == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l650"><span class="ln">650  </span></a>            <span class="s2">return </span><span class="s0">INT_MAX;</span>
+<a name="l651"><span class="ln">651  </span></a>        <span class="s0">}</span>
+<a name="l652"><span class="ln">652  </span></a>        <span class="s2">return </span><span class="s0">_min(node-&gt;value, _min(_min_value_in_subtree(node-&gt;left), _min_value_in_subtree(node-&gt;right)));</span>
+<a name="l653"><span class="ln">653  </span></a>    <span class="s0">}</span>
+<a name="l654"><span class="ln">654  </span></a>
+<a name="l655"><span class="ln">655  </span></a>    <span class="s0">myType _max_value_in_subtree(Edge *node) {</span>
+<a name="l656"><span class="ln">656  </span></a>        <span class="s2">if </span><span class="s0">(node == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l657"><span class="ln">657  </span></a>            <span class="s2">return </span><span class="s0">INT_MIN;</span>
+<a name="l658"><span class="ln">658  </span></a>        <span class="s0">}</span>
+<a name="l659"><span class="ln">659  </span></a>        <span class="s2">return </span><span class="s0">_max(node-&gt;value, _max(_max_value_in_subtree(node-&gt;left), _max_value_in_subtree(node-&gt;right)));</span>
+<a name="l660"><span class="ln">660  </span></a>    <span class="s0">}</span>
+<a name="l661"><span class="ln">661  </span></a>
+<a name="l662"><span class="ln">662  </span></a>    <span class="s2">bool </span><span class="s0">_is_binary_search_tree_iterative() {</span>
+<a name="l663"><span class="ln">663  </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l664"><span class="ln">664  </span></a>        <span class="s0">q.emplace(rootTree);</span>
+<a name="l665"><span class="ln">665  </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l666"><span class="ln">666  </span></a>            <span class="s0">Edge *current = q.front();</span>
+<a name="l667"><span class="ln">667  </span></a>            <span class="s0">q.pop();</span>
+<a name="l668"><span class="ln">668  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;left </span><span class="s2">and </span><span class="s0">_max_value_in_subtree(current-&gt;left) &gt; current-&gt;value) {</span>
+<a name="l669"><span class="ln">669  </span></a>                <span class="s2">return false</span><span class="s0">;</span>
+<a name="l670"><span class="ln">670  </span></a>            <span class="s0">}</span>
+<a name="l671"><span class="ln">671  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;right </span><span class="s2">and </span><span class="s0">_min_value_in_subtree(current-&gt;right) &lt; current-&gt;value) {</span>
+<a name="l672"><span class="ln">672  </span></a>                <span class="s2">return false</span><span class="s0">;</span>
+<a name="l673"><span class="ln">673  </span></a>            <span class="s0">}</span>
+<a name="l674"><span class="ln">674  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;left) {</span>
+<a name="l675"><span class="ln">675  </span></a>                <span class="s0">q.emplace(current-&gt;left);</span>
+<a name="l676"><span class="ln">676  </span></a>            <span class="s0">}</span>
+<a name="l677"><span class="ln">677  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;right) {</span>
+<a name="l678"><span class="ln">678  </span></a>                <span class="s0">q.emplace(current-&gt;right);</span>
+<a name="l679"><span class="ln">679  </span></a>            <span class="s0">}</span>
+<a name="l680"><span class="ln">680  </span></a>        <span class="s0">}</span>
+<a name="l681"><span class="ln">681  </span></a>        <span class="s2">return true</span><span class="s0">;</span>
+<a name="l682"><span class="ln">682  </span></a>    <span class="s0">}</span>
+<a name="l683"><span class="ln">683  </span></a>
+<a name="l684"><span class="ln">684  </span></a>    <span class="s2">bool </span><span class="s0">_is_binary_search_tree_recursive(Edge *root) {</span>
+<a name="l685"><span class="ln">685  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l686"><span class="ln">686  </span></a>            <span class="s2">return true</span><span class="s0">;</span>
+<a name="l687"><span class="ln">687  </span></a>        <span class="s0">}</span>
+<a name="l688"><span class="ln">688  </span></a>        <span class="s2">if </span><span class="s0">(root-&gt;left </span><span class="s2">and </span><span class="s0">_max_value_in_subtree(root-&gt;left) &gt; root-&gt;value) {</span>
+<a name="l689"><span class="ln">689  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l690"><span class="ln">690  </span></a>        <span class="s0">}</span>
+<a name="l691"><span class="ln">691  </span></a>        <span class="s2">if </span><span class="s0">(root-&gt;right </span><span class="s2">and </span><span class="s0">_min_value_in_subtree(root-&gt;right) &lt; root-&gt;value) {</span>
+<a name="l692"><span class="ln">692  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l693"><span class="ln">693  </span></a>        <span class="s0">}</span>
+<a name="l694"><span class="ln">694  </span></a>        <span class="s2">if </span><span class="s0">(!_is_binary_search_tree_recursive(root-&gt;left) </span><span class="s2">or </span><span class="s0">!_is_binary_search_tree_recursive(root-&gt;right)) {</span>
+<a name="l695"><span class="ln">695  </span></a>            <span class="s2">return false</span><span class="s0">;</span>
+<a name="l696"><span class="ln">696  </span></a>        <span class="s0">}</span>
+<a name="l697"><span class="ln">697  </span></a>        <span class="s2">return true</span><span class="s0">;</span>
+<a name="l698"><span class="ln">698  </span></a>    <span class="s0">}</span>
+<a name="l699"><span class="ln">699  </span></a>
+<a name="l700"><span class="ln">700  </span></a>    <span class="s1">/// functions for informations about tree</span>
+<a name="l701"><span class="ln">701  </span></a>
+<a name="l702"><span class="ln">702  </span></a>    <span class="s2">int </span><span class="s0">_get_depth_or_level_of_node_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l703"><span class="ln">703  </span></a>        <span class="s2">int </span><span class="s0">depth = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l704"><span class="ln">704  </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l705"><span class="ln">705  </span></a>        <span class="s2">while </span><span class="s0">(current) {</span>
+<a name="l706"><span class="ln">706  </span></a>            <span class="s2">if </span><span class="s0">(current-&gt;value == value) {</span>
+<a name="l707"><span class="ln">707  </span></a>                <span class="s2">return </span><span class="s0">depth;</span>
+<a name="l708"><span class="ln">708  </span></a>            <span class="s0">}</span>
+<a name="l709"><span class="ln">709  </span></a>            <span class="s0">depth++;</span>
+<a name="l710"><span class="ln">710  </span></a>            <span class="s2">if </span><span class="s0">(value &lt; current-&gt;value) {</span>
+<a name="l711"><span class="ln">711  </span></a>                <span class="s0">current = current-&gt;left;</span>
+<a name="l712"><span class="ln">712  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l713"><span class="ln">713  </span></a>                <span class="s0">current = current-&gt;right;</span>
+<a name="l714"><span class="ln">714  </span></a>            <span class="s0">}</span>
+<a name="l715"><span class="ln">715  </span></a>        <span class="s0">}</span>
+<a name="l716"><span class="ln">716  </span></a>        <span class="s2">return </span><span class="s0">-</span><span class="s4">1</span><span class="s0">;</span>
+<a name="l717"><span class="ln">717  </span></a>    <span class="s0">}</span>
+<a name="l718"><span class="ln">718  </span></a>
+<a name="l719"><span class="ln">719  </span></a>    <span class="s2">static int </span><span class="s0">_get_tree_degree_iterative(Edge *root) {</span>
+<a name="l720"><span class="ln">720  </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l721"><span class="ln">721  </span></a>        <span class="s0">q.emplace(root);</span>
+<a name="l722"><span class="ln">722  </span></a>        <span class="s2">int </span><span class="s0">max_degree = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l723"><span class="ln">723  </span></a>        <span class="s2">int </span><span class="s0">current_degree;</span>
+<a name="l724"><span class="ln">724  </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l725"><span class="ln">725  </span></a>            <span class="s0">current_degree = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l726"><span class="ln">726  </span></a>            <span class="s0">Edge *node = q.front();</span>
+<a name="l727"><span class="ln">727  </span></a>            <span class="s0">q.pop();</span>
+<a name="l728"><span class="ln">728  </span></a>            <span class="s2">if </span><span class="s0">(node-&gt;left) {</span>
+<a name="l729"><span class="ln">729  </span></a>                <span class="s0">q.emplace(node-&gt;left);</span>
+<a name="l730"><span class="ln">730  </span></a>                <span class="s0">current_degree++;</span>
+<a name="l731"><span class="ln">731  </span></a>            <span class="s0">}</span>
+<a name="l732"><span class="ln">732  </span></a>            <span class="s2">if </span><span class="s0">(node-&gt;right) {</span>
+<a name="l733"><span class="ln">733  </span></a>                <span class="s0">q.emplace(node-&gt;right);</span>
+<a name="l734"><span class="ln">734  </span></a>                <span class="s0">current_degree++;</span>
+<a name="l735"><span class="ln">735  </span></a>            <span class="s0">}</span>
+<a name="l736"><span class="ln">736  </span></a>            <span class="s0">max_degree = height(max_degree, current_degree);</span>
+<a name="l737"><span class="ln">737  </span></a>            <span class="s2">if </span><span class="s0">(max_degree == </span><span class="s4">2</span><span class="s0">) {</span>
+<a name="l738"><span class="ln">738  </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l739"><span class="ln">739  </span></a>            <span class="s0">}</span>
+<a name="l740"><span class="ln">740  </span></a>        <span class="s0">}</span>
+<a name="l741"><span class="ln">741  </span></a>        <span class="s2">return </span><span class="s0">max_degree;</span>
+<a name="l742"><span class="ln">742  </span></a>    <span class="s0">}</span>
+<a name="l743"><span class="ln">743  </span></a>
+<a name="l744"><span class="ln">744  </span></a>    <span class="s2">int </span><span class="s0">_get_tree_width_iterative() {</span>
+<a name="l745"><span class="ln">745  </span></a>        <span class="s2">int </span><span class="s0">width = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l746"><span class="ln">746  </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l747"><span class="ln">747  </span></a>        <span class="s0">q.emplace(rootTree);</span>
+<a name="l748"><span class="ln">748  </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l749"><span class="ln">749  </span></a>            <span class="s2">int </span><span class="s0">size = q.size();</span>
+<a name="l750"><span class="ln">750  </span></a>            <span class="s0">width = height(width, size);</span>
+<a name="l751"><span class="ln">751  </span></a>            <span class="s2">while </span><span class="s0">(size--) {</span>
+<a name="l752"><span class="ln">752  </span></a>                <span class="s0">Edge *current = q.front();</span>
+<a name="l753"><span class="ln">753  </span></a>                <span class="s0">q.pop();</span>
+<a name="l754"><span class="ln">754  </span></a>                <span class="s2">if </span><span class="s0">(current-&gt;left) {</span>
+<a name="l755"><span class="ln">755  </span></a>                    <span class="s0">q.emplace(current-&gt;left);</span>
+<a name="l756"><span class="ln">756  </span></a>                <span class="s0">}</span>
+<a name="l757"><span class="ln">757  </span></a>                <span class="s2">if </span><span class="s0">(current-&gt;right) {</span>
+<a name="l758"><span class="ln">758  </span></a>                    <span class="s0">q.emplace(current-&gt;right);</span>
+<a name="l759"><span class="ln">759  </span></a>                <span class="s0">}</span>
+<a name="l760"><span class="ln">760  </span></a>            <span class="s0">}</span>
+<a name="l761"><span class="ln">761  </span></a>        <span class="s0">}</span>
+<a name="l762"><span class="ln">762  </span></a>        <span class="s2">return </span><span class="s0">width;</span>
+<a name="l763"><span class="ln">763  </span></a>    <span class="s0">}</span>
+<a name="l764"><span class="ln">764  </span></a>
+<a name="l765"><span class="ln">765  </span></a>    <span class="s2">int </span><span class="s0">_count_levels_from_node_to_bottom_recursive(Edge *root) {</span>
+<a name="l766"><span class="ln">766  </span></a>        <span class="s2">if </span><span class="s0">(root == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l767"><span class="ln">767  </span></a>            <span class="s2">return </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l768"><span class="ln">768  </span></a>        <span class="s0">}</span>
+<a name="l769"><span class="ln">769  </span></a>        <span class="s2">return </span><span class="s4">1 </span><span class="s0">+ _max(_count_levels_from_node_to_bottom_recursive(root-&gt;left),</span>
+<a name="l770"><span class="ln">770  </span></a>                        <span class="s0">_count_levels_from_node_to_bottom_recursive(root-&gt;right));</span>
+<a name="l771"><span class="ln">771  </span></a>    <span class="s0">}</span>
+<a name="l772"><span class="ln">772  </span></a>
+<a name="l773"><span class="ln">773  </span></a>    <span class="s1">/// functions min and height values</span>
+<a name="l774"><span class="ln">774  </span></a>
+<a name="l775"><span class="ln">775  </span></a>    <span class="s0">myType _min_value_in_tree_iterative() {</span>
+<a name="l776"><span class="ln">776  </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l777"><span class="ln">777  </span></a>        <span class="s2">while </span><span class="s0">(current-&gt;left) {</span>
+<a name="l778"><span class="ln">778  </span></a>            <span class="s0">current = current-&gt;left;</span>
+<a name="l779"><span class="ln">779  </span></a>        <span class="s0">}</span>
+<a name="l780"><span class="ln">780  </span></a>        <span class="s2">return </span><span class="s0">current-&gt;value;</span>
+<a name="l781"><span class="ln">781  </span></a>    <span class="s0">}</span>
+<a name="l782"><span class="ln">782  </span></a>
+<a name="l783"><span class="ln">783  </span></a>    <span class="s0">myType _max_value_in_tree_iterative() {</span>
+<a name="l784"><span class="ln">784  </span></a>        <span class="s0">Edge *current = rootTree;</span>
+<a name="l785"><span class="ln">785  </span></a>        <span class="s2">while </span><span class="s0">(current-&gt;right) {</span>
+<a name="l786"><span class="ln">786  </span></a>            <span class="s0">current = current-&gt;right;</span>
+<a name="l787"><span class="ln">787  </span></a>        <span class="s0">}</span>
+<a name="l788"><span class="ln">788  </span></a>        <span class="s2">return </span><span class="s0">current-&gt;value;</span>
+<a name="l789"><span class="ln">789  </span></a>    <span class="s0">}</span>
+<a name="l790"><span class="ln">790  </span></a>
+<a name="l791"><span class="ln">791  </span></a>    <span class="s1">/// other functions</span>
+<a name="l792"><span class="ln">792  </span></a>
+<a name="l793"><span class="ln">793  </span></a>    <span class="s2">bool </span><span class="s0">_empty() {</span>
+<a name="l794"><span class="ln">794  </span></a>        <span class="s2">return </span><span class="s0">rootTree == </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l795"><span class="ln">795  </span></a>    <span class="s0">}</span>
+<a name="l796"><span class="ln">796  </span></a>
+<a name="l797"><span class="ln">797  </span></a>    <span class="s2">void </span><span class="s0">_clear_tree_recursive(Edge *&amp;root) {</span>
+<a name="l798"><span class="ln">798  </span></a>        <span class="s2">if </span><span class="s0">(root) {</span>
+<a name="l799"><span class="ln">799  </span></a>            <span class="s0">_clear_tree_recursive(root-&gt;left);</span>
+<a name="l800"><span class="ln">800  </span></a>            <span class="s0">_clear_tree_recursive(root-&gt;right);</span>
+<a name="l801"><span class="ln">801  </span></a>            <span class="s2">delete </span><span class="s0">root;</span>
+<a name="l802"><span class="ln">802  </span></a>            <span class="s0">root = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l803"><span class="ln">803  </span></a>        <span class="s0">}</span>
+<a name="l804"><span class="ln">804  </span></a>    <span class="s0">}</span>
+<a name="l805"><span class="ln">805  </span></a>
+<a name="l806"><span class="ln">806  </span></a>    <span class="s2">static void </span><span class="s0">_print_empty() {</span>
+<a name="l807"><span class="ln">807  </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Sorry, your tree is empty ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l808"><span class="ln">808  </span></a>    <span class="s0">}</span>
+<a name="l809"><span class="ln">809  </span></a>
+<a name="l810"><span class="ln">810  </span></a>    <span class="s1">// Time Complexity: O(log n)</span>
+<a name="l811"><span class="ln">811  </span></a>    <span class="s1">// Auxiliary Space: O(1)</span>
+<a name="l812"><span class="ln">812  </span></a>    <span class="s2">static int </span><span class="s0">_power(</span><span class="s2">int </span><span class="s0">x, </span><span class="s2">unsigned </span><span class="s0">n) {</span>
+<a name="l813"><span class="ln">813  </span></a>        <span class="s2">int </span><span class="s0">result = </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l814"><span class="ln">814  </span></a>        <span class="s2">while </span><span class="s0">(n) {</span>
+<a name="l815"><span class="ln">815  </span></a>            <span class="s2">if </span><span class="s0">(n &amp; </span><span class="s4">1</span><span class="s0">) {</span>
+<a name="l816"><span class="ln">816  </span></a>                <span class="s0">result = result * x;</span>
+<a name="l817"><span class="ln">817  </span></a>            <span class="s0">}</span>
+<a name="l818"><span class="ln">818  </span></a>            <span class="s0">x = x * x;</span>
+<a name="l819"><span class="ln">819  </span></a>            <span class="s0">n &gt;&gt;= </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l820"><span class="ln">820  </span></a>        <span class="s0">}</span>
+<a name="l821"><span class="ln">821  </span></a>        <span class="s2">return </span><span class="s0">result;</span>
+<a name="l822"><span class="ln">822  </span></a>    <span class="s0">}</span>
+<a name="l823"><span class="ln">823  </span></a>
+<a name="l824"><span class="ln">824  </span></a>    <span class="s2">static </span><span class="s0">myType _max(</span><span class="s2">const </span><span class="s0">myType &amp;a, </span><span class="s2">const </span><span class="s0">myType &amp;b) {</span>
+<a name="l825"><span class="ln">825  </span></a>        <span class="s2">return </span><span class="s0">(a &gt; b) ? a : b;</span>
+<a name="l826"><span class="ln">826  </span></a>    <span class="s0">}</span>
+<a name="l827"><span class="ln">827  </span></a>
+<a name="l828"><span class="ln">828  </span></a>    <span class="s2">static </span><span class="s0">myType _min(</span><span class="s2">const </span><span class="s0">myType &amp;a, </span><span class="s2">const </span><span class="s0">myType &amp;b) {</span>
+<a name="l829"><span class="ln">829  </span></a>        <span class="s2">return </span><span class="s0">(a &lt; b) ? a : b;</span>
+<a name="l830"><span class="ln">830  </span></a>    <span class="s0">}</span>
+<a name="l831"><span class="ln">831  </span></a>
+<a name="l832"><span class="ln">832  </span></a>    <span class="s1">/// functions for print tree</span>
+<a name="l833"><span class="ln">833  </span></a>
+<a name="l834"><span class="ln">834  </span></a>    <span class="s2">static void </span><span class="s0">_print_level_by_level_iterative(Edge *root) {</span>
+<a name="l835"><span class="ln">835  </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l836"><span class="ln">836  </span></a>        <span class="s0">q.push(root);</span>
+<a name="l837"><span class="ln">837  </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l838"><span class="ln">838  </span></a>            <span class="s2">int </span><span class="s0">size = q.size();</span>
+<a name="l839"><span class="ln">839  </span></a>            <span class="s2">while </span><span class="s0">(size--) {</span>
+<a name="l840"><span class="ln">840  </span></a>                <span class="s0">Edge *node = q.front();</span>
+<a name="l841"><span class="ln">841  </span></a>                <span class="s0">q.pop();</span>
+<a name="l842"><span class="ln">842  </span></a>                <span class="s0">cout &lt;&lt; node-&gt;value &lt;&lt; </span><span class="s3">' '</span><span class="s0">;</span>
+<a name="l843"><span class="ln">843  </span></a>                <span class="s2">if </span><span class="s0">(node-&gt;left) {</span>
+<a name="l844"><span class="ln">844  </span></a>                    <span class="s0">q.push(node-&gt;left);</span>
+<a name="l845"><span class="ln">845  </span></a>                <span class="s0">}</span>
+<a name="l846"><span class="ln">846  </span></a>                <span class="s2">if </span><span class="s0">(node-&gt;right) {</span>
+<a name="l847"><span class="ln">847  </span></a>                    <span class="s0">q.push(node-&gt;right);</span>
+<a name="l848"><span class="ln">848  </span></a>                <span class="s0">}</span>
+<a name="l849"><span class="ln">849  </span></a>            <span class="s0">}</span>
+<a name="l850"><span class="ln">850  </span></a>            <span class="s0">cout &lt;&lt; endl;</span>
+<a name="l851"><span class="ln">851  </span></a>        <span class="s0">}</span>
+<a name="l852"><span class="ln">852  </span></a>    <span class="s0">}</span>
+<a name="l853"><span class="ln">853  </span></a>
+<a name="l854"><span class="ln">854  </span></a>    <span class="s2">static const int </span><span class="s0">SPACE = </span><span class="s4">3</span><span class="s0">;</span>
+<a name="l855"><span class="ln">855  </span></a>
+<a name="l856"><span class="ln">856  </span></a>    <span class="s2">static void </span><span class="s0">_print_space(</span><span class="s2">int </span><span class="s0">&amp;n) {</span>
+<a name="l857"><span class="ln">857  </span></a>        <span class="s2">for </span><span class="s0">(</span><span class="s2">int </span><span class="s0">i = </span><span class="s4">0</span><span class="s0">; i &lt; n; ++i) {</span>
+<a name="l858"><span class="ln">858  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">' '</span><span class="s0">;</span>
+<a name="l859"><span class="ln">859  </span></a>        <span class="s0">}</span>
+<a name="l860"><span class="ln">860  </span></a>    <span class="s0">}</span>
+<a name="l861"><span class="ln">861  </span></a>
+<a name="l862"><span class="ln">862  </span></a>    <span class="s2">void </span><span class="s0">_print_hierarchically_iterative() {</span>
+<a name="l863"><span class="ln">863  </span></a>        <span class="s2">int </span><span class="s0">w = </span><span class="s4">3</span><span class="s0">;</span>
+<a name="l864"><span class="ln">864  </span></a>        <span class="s2">int </span><span class="s0">count_level = _count_levels_from_node_to_bottom_recursive(rootTree);</span>
+<a name="l865"><span class="ln">865  </span></a>        <span class="s2">int </span><span class="s0">i = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l866"><span class="ln">866  </span></a>        <span class="s0">queue&lt;Edge *&gt; q;</span>
+<a name="l867"><span class="ln">867  </span></a>        <span class="s0">q.emplace(rootTree);</span>
+<a name="l868"><span class="ln">868  </span></a>        <span class="s2">while </span><span class="s0">(!q.empty()) {</span>
+<a name="l869"><span class="ln">869  </span></a>            <span class="s2">if </span><span class="s0">(i == count_level) {</span>
+<a name="l870"><span class="ln">870  </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l871"><span class="ln">871  </span></a>            <span class="s0">}</span>
+<a name="l872"><span class="ln">872  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;l&quot; </span><span class="s0">&lt;&lt; setw(</span><span class="s4">2</span><span class="s0">) &lt;&lt; i &lt;&lt; </span><span class="s3">'.'</span><span class="s0">;</span>
+<a name="l873"><span class="ln">873  </span></a>            <span class="s2">int </span><span class="s0">len = q.size();</span>
+<a name="l874"><span class="ln">874  </span></a>            <span class="s2">int </span><span class="s0">first = _power(</span><span class="s4">2</span><span class="s0">, count_level - i - </span><span class="s4">1</span><span class="s0">) - </span><span class="s4">1</span><span class="s0">;</span>
+<a name="l875"><span class="ln">875  </span></a>            <span class="s0">first *= SPACE;</span>
+<a name="l876"><span class="ln">876  </span></a>            <span class="s0">_print_space(first);</span>
+<a name="l877"><span class="ln">877  </span></a>            <span class="s2">int </span><span class="s0">between = _power(</span><span class="s4">2</span><span class="s0">, count_level - i);</span>
+<a name="l878"><span class="ln">878  </span></a>            <span class="s0">between *= SPACE;</span>
+<a name="l879"><span class="ln">879  </span></a>            <span class="s0">between -= w;</span>
+<a name="l880"><span class="ln">880  </span></a>            <span class="s0">i++;</span>
+<a name="l881"><span class="ln">881  </span></a>            <span class="s2">while </span><span class="s0">(len--) {</span>
+<a name="l882"><span class="ln">882  </span></a>                <span class="s0">Edge *current = q.front();</span>
+<a name="l883"><span class="ln">883  </span></a>                <span class="s0">q.pop();</span>
+<a name="l884"><span class="ln">884  </span></a>                <span class="s2">if </span><span class="s0">(current) {</span>
+<a name="l885"><span class="ln">885  </span></a>                    <span class="s0">cout &lt;&lt; setw(w) &lt;&lt; current-&gt;value;</span>
+<a name="l886"><span class="ln">886  </span></a>                <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l887"><span class="ln">887  </span></a>                    <span class="s1">// N : Null</span>
+<a name="l888"><span class="ln">888  </span></a>                    <span class="s0">cout &lt;&lt; setw(w) &lt;&lt; </span><span class="s3">&quot;N&quot;</span><span class="s0">;</span>
+<a name="l889"><span class="ln">889  </span></a>                <span class="s0">}</span>
+<a name="l890"><span class="ln">890  </span></a>                <span class="s2">if </span><span class="s0">(current </span><span class="s2">and </span><span class="s0">current-&gt;left) {</span>
+<a name="l891"><span class="ln">891  </span></a>                    <span class="s0">q.emplace(current-&gt;left);</span>
+<a name="l892"><span class="ln">892  </span></a>                <span class="s0">} </span><span class="s2">else if </span><span class="s0">(i &lt; count_level) {</span>
+<a name="l893"><span class="ln">893  </span></a>                    <span class="s0">q.emplace(</span><span class="s2">nullptr</span><span class="s0">);</span>
+<a name="l894"><span class="ln">894  </span></a>                <span class="s0">}</span>
+<a name="l895"><span class="ln">895  </span></a>                <span class="s2">if </span><span class="s0">(current </span><span class="s2">and </span><span class="s0">current-&gt;right) {</span>
+<a name="l896"><span class="ln">896  </span></a>                    <span class="s0">q.emplace(current-&gt;right);</span>
+<a name="l897"><span class="ln">897  </span></a>                <span class="s0">} </span><span class="s2">else if </span><span class="s0">(i &lt; count_level) {</span>
+<a name="l898"><span class="ln">898  </span></a>                    <span class="s0">q.emplace(</span><span class="s2">nullptr</span><span class="s0">);</span>
+<a name="l899"><span class="ln">899  </span></a>                <span class="s0">}</span>
+<a name="l900"><span class="ln">900  </span></a>                <span class="s2">if </span><span class="s0">(len &gt; </span><span class="s4">0</span><span class="s0">) {</span>
+<a name="l901"><span class="ln">901  </span></a>                    <span class="s1">// don't print after last value in the level</span>
+<a name="l902"><span class="ln">902  </span></a>                    <span class="s0">_print_space(between);</span>
+<a name="l903"><span class="ln">903  </span></a>                <span class="s0">}</span>
+<a name="l904"><span class="ln">904  </span></a>            <span class="s0">}</span>
+<a name="l905"><span class="ln">905  </span></a>            <span class="s0">cout &lt;&lt; endl;</span>
+<a name="l906"><span class="ln">906  </span></a>        <span class="s0">}</span>
+<a name="l907"><span class="ln">907  </span></a>    <span class="s0">}</span>
+<a name="l908"><span class="ln">908  </span></a>
+<a name="l909"><span class="ln">909  </span></a><span class="s1">///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////</span>
+<a name="l910"><span class="ln">910  </span></a><span class="s2">public</span><span class="s0">:</span>
+<a name="l911"><span class="ln">911  </span></a>
+<a name="l912"><span class="ln">912  </span></a>    <span class="s1">// Constructor</span>
+<a name="l913"><span class="ln">913  </span></a>    <span class="s0">BinarySearchTree() {</span>
+<a name="l914"><span class="ln">914  </span></a>        <span class="s0">rootTree = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l915"><span class="ln">915  </span></a>        <span class="s0">count_nodes = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l916"><span class="ln">916  </span></a>        <span class="s0">is_deleted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l917"><span class="ln">917  </span></a>        <span class="s0">is_inserted = </span><span class="s2">true</span><span class="s0">;</span>
+<a name="l918"><span class="ln">918  </span></a>    <span class="s0">}</span>
+<a name="l919"><span class="ln">919  </span></a>
+<a name="l920"><span class="ln">920  </span></a>    <span class="s1">// Destructor, it is call in the end of program</span>
+<a name="l921"><span class="ln">921  </span></a>    <span class="s0">~BinarySearchTree() {</span>
+<a name="l922"><span class="ln">922  </span></a>        <span class="s0">_clear_tree_recursive(rootTree);</span>
+<a name="l923"><span class="ln">923  </span></a>    <span class="s0">}</span>
+<a name="l924"><span class="ln">924  </span></a>
+<a name="l925"><span class="ln">925  </span></a>    <span class="s2">void </span><span class="s0">insert_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l926"><span class="ln">926  </span></a>        <span class="s0">_insert_iterative(value);</span>
+<a name="l927"><span class="ln">927  </span></a>        <span class="s2">if </span><span class="s0">(is_inserted) {</span>
+<a name="l928"><span class="ln">928  </span></a>            <span class="s0">count_nodes++;</span>
+<a name="l929"><span class="ln">929  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Inserted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l930"><span class="ln">930  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l931"><span class="ln">931  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; already in your tree, duplicates are not allowed.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l932"><span class="ln">932  </span></a>        <span class="s0">}</span>
+<a name="l933"><span class="ln">933  </span></a>    <span class="s0">}</span>
+<a name="l934"><span class="ln">934  </span></a>
+<a name="l935"><span class="ln">935  </span></a>    <span class="s2">void </span><span class="s0">insert_recursive(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l936"><span class="ln">936  </span></a>        <span class="s0">rootTree = _insert_recursive(rootTree, value);</span>
+<a name="l937"><span class="ln">937  </span></a>        <span class="s2">if </span><span class="s0">(is_inserted) {</span>
+<a name="l938"><span class="ln">938  </span></a>            <span class="s0">count_nodes++;</span>
+<a name="l939"><span class="ln">939  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Inserted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l940"><span class="ln">940  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l941"><span class="ln">941  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; already in your tree, duplicates are not allowed.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l942"><span class="ln">942  </span></a>        <span class="s0">}</span>
+<a name="l943"><span class="ln">943  </span></a>    <span class="s0">}</span>
+<a name="l944"><span class="ln">944  </span></a>
+<a name="l945"><span class="ln">945  </span></a>    <span class="s2">void </span><span class="s0">insert_random_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l946"><span class="ln">946  </span></a>        <span class="s1">// this function insert from left to right</span>
+<a name="l947"><span class="ln">947  </span></a>        <span class="s2">int </span><span class="s0">level_node = </span><span class="s4">0</span><span class="s0">;</span><span class="s1">// not use</span>
+<a name="l948"><span class="ln">948  </span></a>        <span class="s0">Edge *is_there = _search_iterative(value, level_node);</span>
+<a name="l949"><span class="ln">949  </span></a>        <span class="s2">if </span><span class="s0">(is_there) {</span>
+<a name="l950"><span class="ln">950  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; already in your tree, duplicates are not allowed.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l951"><span class="ln">951  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l952"><span class="ln">952  </span></a>        <span class="s0">}</span>
+<a name="l953"><span class="ln">953  </span></a>        <span class="s0">_insert_random_iterative(value);</span>
+<a name="l954"><span class="ln">954  </span></a>        <span class="s0">count_nodes++;</span>
+<a name="l955"><span class="ln">955  </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Inserted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l956"><span class="ln">956  </span></a>    <span class="s0">}</span>
+<a name="l957"><span class="ln">957  </span></a>
+<a name="l958"><span class="ln">958  </span></a>    <span class="s2">void </span><span class="s0">insert_value_using_avl_function(</span><span class="s2">const int </span><span class="s0">&amp;value, </span><span class="s2">bool </span><span class="s0">print_statement) {</span>
+<a name="l959"><span class="ln">959  </span></a>        <span class="s0">rootTree = _insert_using_avl_function_recursive(rootTree, value);</span>
+<a name="l960"><span class="ln">960  </span></a>        <span class="s2">if </span><span class="s0">(print_statement) {</span>
+<a name="l961"><span class="ln">961  </span></a>            <span class="s2">if </span><span class="s0">(is_inserted) {</span>
+<a name="l962"><span class="ln">962  </span></a>                <span class="s0">count_nodes++;</span>
+<a name="l963"><span class="ln">963  </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Inserted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l964"><span class="ln">964  </span></a>            <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l965"><span class="ln">965  </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; already in your tree, duplicates are not allowed.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l966"><span class="ln">966  </span></a>            <span class="s0">}</span>
+<a name="l967"><span class="ln">967  </span></a>        <span class="s0">}</span>
+<a name="l968"><span class="ln">968  </span></a>    <span class="s0">}</span>
+<a name="l969"><span class="ln">969  </span></a>
+<a name="l970"><span class="ln">970  </span></a>    <span class="s2">void </span><span class="s0">delete_value_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l971"><span class="ln">971  </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l972"><span class="ln">972  </span></a>            <span class="s0">_print_empty();</span>
+<a name="l973"><span class="ln">973  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l974"><span class="ln">974  </span></a>        <span class="s0">}</span>
+<a name="l975"><span class="ln">975  </span></a>        <span class="s0">_delete_value_iterative(value);</span>
+<a name="l976"><span class="ln">976  </span></a>        <span class="s2">if </span><span class="s0">(is_deleted) {</span>
+<a name="l977"><span class="ln">977  </span></a>            <span class="s0">count_nodes--;</span>
+<a name="l978"><span class="ln">978  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Deleted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l979"><span class="ln">979  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l980"><span class="ln">980  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is not found in your tree ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l981"><span class="ln">981  </span></a>        <span class="s0">}</span>
+<a name="l982"><span class="ln">982  </span></a>    <span class="s0">}</span>
+<a name="l983"><span class="ln">983  </span></a>
+<a name="l984"><span class="ln">984  </span></a>    <span class="s2">void </span><span class="s0">delete_value_recursive(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l985"><span class="ln">985  </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l986"><span class="ln">986  </span></a>            <span class="s0">_print_empty();</span>
+<a name="l987"><span class="ln">987  </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l988"><span class="ln">988  </span></a>        <span class="s0">}</span>
+<a name="l989"><span class="ln">989  </span></a>        <span class="s0">rootTree = _delete_value_recursive(rootTree, value);</span>
+<a name="l990"><span class="ln">990  </span></a>        <span class="s2">if </span><span class="s0">(is_deleted) {</span>
+<a name="l991"><span class="ln">991  </span></a>            <span class="s0">count_nodes--;</span>
+<a name="l992"><span class="ln">992  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Deleted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l993"><span class="ln">993  </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l994"><span class="ln">994  </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is not found in your tree ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l995"><span class="ln">995  </span></a>        <span class="s0">}</span>
+<a name="l996"><span class="ln">996  </span></a>    <span class="s0">}</span>
+<a name="l997"><span class="ln">997  </span></a>
+<a name="l998"><span class="ln">998  </span></a>    <span class="s2">void </span><span class="s0">delete_value_using_avl_function_recursive(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l999"><span class="ln">999  </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1000"><span class="ln">1000 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1001"><span class="ln">1001 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1002"><span class="ln">1002 </span></a>        <span class="s0">}</span>
+<a name="l1003"><span class="ln">1003 </span></a>        <span class="s0">rootTree = _delete_value_and_get_successor_from_right_subtree_recursive(rootTree, value);</span>
+<a name="l1004"><span class="ln">1004 </span></a>        <span class="s2">if </span><span class="s0">(is_deleted) {</span>
+<a name="l1005"><span class="ln">1005 </span></a>            <span class="s0">count_nodes--;</span>
+<a name="l1006"><span class="ln">1006 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Deleted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1007"><span class="ln">1007 </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l1008"><span class="ln">1008 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is not found in your tree ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1009"><span class="ln">1009 </span></a>        <span class="s0">}</span>
+<a name="l1010"><span class="ln">1010 </span></a>    <span class="s0">}</span>
+<a name="l1011"><span class="ln">1011 </span></a>
+<a name="l1012"><span class="ln">1012 </span></a>    <span class="s2">void </span><span class="s0">search_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l1013"><span class="ln">1013 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1014"><span class="ln">1014 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1015"><span class="ln">1015 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1016"><span class="ln">1016 </span></a>        <span class="s0">}</span>
+<a name="l1017"><span class="ln">1017 </span></a>        <span class="s2">int </span><span class="s0">level_node = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l1018"><span class="ln">1018 </span></a>        <span class="s2">bool </span><span class="s0">is_found = _search_iterative(value, level_node);</span>
+<a name="l1019"><span class="ln">1019 </span></a>        <span class="s2">if </span><span class="s0">(is_found) {</span>
+<a name="l1020"><span class="ln">1020 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Is found in your tree at level: &quot; </span><span class="s0">&lt;&lt; level_node &lt;&lt; </span><span class="s3">&quot;.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1021"><span class="ln">1021 </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l1022"><span class="ln">1022 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is not found in your tree.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1023"><span class="ln">1023 </span></a>        <span class="s0">}</span>
+<a name="l1024"><span class="ln">1024 </span></a>    <span class="s0">}</span>
+<a name="l1025"><span class="ln">1025 </span></a>
+<a name="l1026"><span class="ln">1026 </span></a>    <span class="s2">void </span><span class="s0">search_recursive(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l1027"><span class="ln">1027 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1028"><span class="ln">1028 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1029"><span class="ln">1029 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1030"><span class="ln">1030 </span></a>        <span class="s0">}</span>
+<a name="l1031"><span class="ln">1031 </span></a>        <span class="s2">int </span><span class="s0">level_node = </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l1032"><span class="ln">1032 </span></a>        <span class="s2">bool </span><span class="s0">is_found = _search_recursive(rootTree, value, level_node);</span>
+<a name="l1033"><span class="ln">1033 </span></a>        <span class="s2">if </span><span class="s0">(is_found) {</span>
+<a name="l1034"><span class="ln">1034 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; Is found in your tree at level: &quot; </span><span class="s0">&lt;&lt; level_node &lt;&lt; </span><span class="s3">&quot;.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1035"><span class="ln">1035 </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l1036"><span class="ln">1036 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is not found in your tree.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1037"><span class="ln">1037 </span></a>        <span class="s0">}</span>
+<a name="l1038"><span class="ln">1038 </span></a>    <span class="s0">}</span>
+<a name="l1039"><span class="ln">1039 </span></a>
+<a name="l1040"><span class="ln">1040 </span></a>    <span class="s2">void </span><span class="s0">pre_order() {</span>
+<a name="l1041"><span class="ln">1041 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1042"><span class="ln">1042 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1043"><span class="ln">1043 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1044"><span class="ln">1044 </span></a>        <span class="s0">}</span>
+<a name="l1045"><span class="ln">1045 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Pre Order traversal is:</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1046"><span class="ln">1046 </span></a>        <span class="s0">_pre_order_recursive(rootTree);</span>
+<a name="l1047"><span class="ln">1047 </span></a>        <span class="s0">cout &lt;&lt; endl;</span>
+<a name="l1048"><span class="ln">1048 </span></a>    <span class="s0">}</span>
+<a name="l1049"><span class="ln">1049 </span></a>
+<a name="l1050"><span class="ln">1050 </span></a>    <span class="s2">void </span><span class="s0">in_order() {</span>
+<a name="l1051"><span class="ln">1051 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1052"><span class="ln">1052 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1053"><span class="ln">1053 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1054"><span class="ln">1054 </span></a>        <span class="s0">}</span>
+<a name="l1055"><span class="ln">1055 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;In Order traversal is:</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1056"><span class="ln">1056 </span></a>        <span class="s0">_in_order_recursive(rootTree);</span>
+<a name="l1057"><span class="ln">1057 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;</span><span class="s5">\n</span><span class="s3">Notice that the values appear in ascending order by (In Order Traversal).</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1058"><span class="ln">1058 </span></a>    <span class="s0">}</span>
+<a name="l1059"><span class="ln">1059 </span></a>
+<a name="l1060"><span class="ln">1060 </span></a>    <span class="s2">void </span><span class="s0">post_order() {</span>
+<a name="l1061"><span class="ln">1061 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1062"><span class="ln">1062 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1063"><span class="ln">1063 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1064"><span class="ln">1064 </span></a>        <span class="s0">}</span>
+<a name="l1065"><span class="ln">1065 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Post Order traversal is:</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1066"><span class="ln">1066 </span></a>        <span class="s0">_post_order_recursive(rootTree);</span>
+<a name="l1067"><span class="ln">1067 </span></a>        <span class="s0">cout &lt;&lt; endl;</span>
+<a name="l1068"><span class="ln">1068 </span></a>    <span class="s0">}</span>
+<a name="l1069"><span class="ln">1069 </span></a>
+<a name="l1070"><span class="ln">1070 </span></a>    <span class="s2">void </span><span class="s0">is_linear_iterative() {</span>
+<a name="l1071"><span class="ln">1071 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1072"><span class="ln">1072 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Linear.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1073"><span class="ln">1073 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1074"><span class="ln">1074 </span></a>        <span class="s0">}</span>
+<a name="l1075"><span class="ln">1075 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_linear_from_left_iterative();</span>
+<a name="l1076"><span class="ln">1076 </span></a>        <span class="s2">if </span><span class="s0">(ans) {</span>
+<a name="l1077"><span class="ln">1077 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is linear and go to the left.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1078"><span class="ln">1078 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1079"><span class="ln">1079 </span></a>        <span class="s0">}</span>
+<a name="l1080"><span class="ln">1080 </span></a>        <span class="s0">ans = _is_linear_from_right_iterative();</span>
+<a name="l1081"><span class="ln">1081 </span></a>        <span class="s2">if </span><span class="s0">(ans) {</span>
+<a name="l1082"><span class="ln">1082 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is linear and go to the right.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1083"><span class="ln">1083 </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l1084"><span class="ln">1084 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is not linear ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1085"><span class="ln">1085 </span></a>        <span class="s0">}</span>
+<a name="l1086"><span class="ln">1086 </span></a>    <span class="s0">}</span>
+<a name="l1087"><span class="ln">1087 </span></a>
+<a name="l1088"><span class="ln">1088 </span></a>    <span class="s2">void </span><span class="s0">is_complete_iterative() {</span>
+<a name="l1089"><span class="ln">1089 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1090"><span class="ln">1090 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Complete.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1091"><span class="ln">1091 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1092"><span class="ln">1092 </span></a>        <span class="s0">}</span>
+<a name="l1093"><span class="ln">1093 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_complete_iterative();</span>
+<a name="l1094"><span class="ln">1094 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Is Complete: &quot; </span><span class="s0">&lt;&lt; (ans ? </span><span class="s3">&quot;True&quot; </span><span class="s0">: </span><span class="s3">&quot;False&quot;</span><span class="s0">) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1095"><span class="ln">1095 </span></a>    <span class="s0">}</span>
+<a name="l1096"><span class="ln">1096 </span></a>
+<a name="l1097"><span class="ln">1097 </span></a>    <span class="s2">void </span><span class="s0">is_complete_recursive() {</span>
+<a name="l1098"><span class="ln">1098 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1099"><span class="ln">1099 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Complete.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1100"><span class="ln">1100 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1101"><span class="ln">1101 </span></a>        <span class="s0">}</span>
+<a name="l1102"><span class="ln">1102 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_complete_recursive(rootTree, </span><span class="s4">0</span><span class="s0">, count_nodes);</span>
+<a name="l1103"><span class="ln">1103 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Is Complete: &quot; </span><span class="s0">&lt;&lt; (ans ? </span><span class="s3">&quot;True&quot; </span><span class="s0">: </span><span class="s3">&quot;False&quot;</span><span class="s0">) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1104"><span class="ln">1104 </span></a>    <span class="s0">}</span>
+<a name="l1105"><span class="ln">1105 </span></a>
+<a name="l1106"><span class="ln">1106 </span></a>    <span class="s2">void </span><span class="s0">is_full_iterative() {</span>
+<a name="l1107"><span class="ln">1107 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1108"><span class="ln">1108 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Full.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1109"><span class="ln">1109 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1110"><span class="ln">1110 </span></a>        <span class="s0">}</span>
+<a name="l1111"><span class="ln">1111 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_full_iterative();</span>
+<a name="l1112"><span class="ln">1112 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Is Full: &quot; </span><span class="s0">&lt;&lt; (ans ? </span><span class="s3">&quot;True&quot; </span><span class="s0">: </span><span class="s3">&quot;False&quot;</span><span class="s0">) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1113"><span class="ln">1113 </span></a>    <span class="s0">}</span>
+<a name="l1114"><span class="ln">1114 </span></a>
+<a name="l1115"><span class="ln">1115 </span></a>    <span class="s2">void </span><span class="s0">is_full_recursive() {</span>
+<a name="l1116"><span class="ln">1116 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1117"><span class="ln">1117 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Full.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1118"><span class="ln">1118 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1119"><span class="ln">1119 </span></a>        <span class="s0">}</span>
+<a name="l1120"><span class="ln">1120 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_full_recursive(rootTree);</span>
+<a name="l1121"><span class="ln">1121 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Is Full: &quot; </span><span class="s0">&lt;&lt; (ans ? </span><span class="s3">&quot;True&quot; </span><span class="s0">: </span><span class="s3">&quot;False&quot;</span><span class="s0">) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1122"><span class="ln">1122 </span></a>    <span class="s0">}</span>
+<a name="l1123"><span class="ln">1123 </span></a>
+<a name="l1124"><span class="ln">1124 </span></a>    <span class="s2">void </span><span class="s0">is_perfect() {</span>
+<a name="l1125"><span class="ln">1125 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1126"><span class="ln">1126 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Perfect.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1127"><span class="ln">1127 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1128"><span class="ln">1128 </span></a>        <span class="s0">}</span>
+<a name="l1129"><span class="ln">1129 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_perfect();</span>
+<a name="l1130"><span class="ln">1130 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Is perfect: &quot; </span><span class="s0">&lt;&lt; (ans ? </span><span class="s3">&quot;True&quot; </span><span class="s0">: </span><span class="s3">&quot;False&quot;</span><span class="s0">) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1131"><span class="ln">1131 </span></a>    <span class="s0">}</span>
+<a name="l1132"><span class="ln">1132 </span></a>
+<a name="l1133"><span class="ln">1133 </span></a>    <span class="s2">void </span><span class="s0">is_binary_search_tree_iterative() {</span>
+<a name="l1134"><span class="ln">1134 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1135"><span class="ln">1135 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Binary Search Tree ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1136"><span class="ln">1136 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1137"><span class="ln">1137 </span></a>        <span class="s0">}</span>
+<a name="l1138"><span class="ln">1138 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_binary_search_tree_iterative();</span>
+<a name="l1139"><span class="ln">1139 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Is BST: &quot; </span><span class="s0">&lt;&lt; (ans ? </span><span class="s3">&quot;True&quot; </span><span class="s0">: </span><span class="s3">&quot;False&quot;</span><span class="s0">) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1140"><span class="ln">1140 </span></a>    <span class="s0">}</span>
+<a name="l1141"><span class="ln">1141 </span></a>
+<a name="l1142"><span class="ln">1142 </span></a>    <span class="s2">void </span><span class="s0">is_binary_search_tree_recursive() {</span>
+<a name="l1143"><span class="ln">1143 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1144"><span class="ln">1144 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered Binary Search Tree ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1145"><span class="ln">1145 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1146"><span class="ln">1146 </span></a>        <span class="s0">}</span>
+<a name="l1147"><span class="ln">1147 </span></a>        <span class="s2">bool </span><span class="s0">ans = _is_binary_search_tree_recursive(rootTree);</span>
+<a name="l1148"><span class="ln">1148 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Is BST: &quot; </span><span class="s0">&lt;&lt; (ans ? </span><span class="s3">&quot;True&quot; </span><span class="s0">: </span><span class="s3">&quot;False&quot;</span><span class="s0">) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1149"><span class="ln">1149 </span></a>    <span class="s0">}</span>
+<a name="l1150"><span class="ln">1150 </span></a>
+<a name="l1151"><span class="ln">1151 </span></a>    <span class="s2">void </span><span class="s0">get_depth_or_level_of_node_iterative(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l1152"><span class="ln">1152 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1153"><span class="ln">1153 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1154"><span class="ln">1154 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1155"><span class="ln">1155 </span></a>        <span class="s0">}</span>
+<a name="l1156"><span class="ln">1156 </span></a>        <span class="s2">int </span><span class="s0">depth = _get_depth_or_level_of_node_iterative(value);</span>
+<a name="l1157"><span class="ln">1157 </span></a>        <span class="s2">if </span><span class="s0">(depth == -</span><span class="s4">1</span><span class="s0">) {</span>
+<a name="l1158"><span class="ln">1158 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is not found in your tree.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1159"><span class="ln">1159 </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l1160"><span class="ln">1160 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Depth of node &lt;&quot; </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is: &quot; </span><span class="s0">&lt;&lt; depth &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1161"><span class="ln">1161 </span></a>        <span class="s0">}</span>
+<a name="l1162"><span class="ln">1162 </span></a>    <span class="s0">}</span>
+<a name="l1163"><span class="ln">1163 </span></a>
+<a name="l1164"><span class="ln">1164 </span></a>    <span class="s2">void </span><span class="s0">get_height_of_node_recursive(</span><span class="s2">const </span><span class="s0">myType &amp;value) {</span>
+<a name="l1165"><span class="ln">1165 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1166"><span class="ln">1166 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1167"><span class="ln">1167 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1168"><span class="ln">1168 </span></a>        <span class="s0">}</span>
+<a name="l1169"><span class="ln">1169 </span></a>        <span class="s2">int </span><span class="s0">level_node = </span><span class="s4">0</span><span class="s0">;</span><span class="s1">// not use</span>
+<a name="l1170"><span class="ln">1170 </span></a>        <span class="s0">Edge *node = _search_iterative(value, level_node);</span>
+<a name="l1171"><span class="ln">1171 </span></a>        <span class="s2">if </span><span class="s0">(node == </span><span class="s2">nullptr</span><span class="s0">) {</span>
+<a name="l1172"><span class="ln">1172 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">'&lt;' </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is not found in your tree.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1173"><span class="ln">1173 </span></a>        <span class="s0">}</span>
+<a name="l1174"><span class="ln">1174 </span></a>        <span class="s2">int </span><span class="s0">ans = _count_levels_from_node_to_bottom_recursive(node);</span>
+<a name="l1175"><span class="ln">1175 </span></a><span class="s1">//        ans -= 1;</span>
+<a name="l1176"><span class="ln">1176 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Height of node &lt;&quot; </span><span class="s0">&lt;&lt; value &lt;&lt; </span><span class="s3">&quot;&gt; is: &quot; </span><span class="s0">&lt;&lt; ans &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1177"><span class="ln">1177 </span></a>    <span class="s0">}</span>
+<a name="l1178"><span class="ln">1178 </span></a>
+<a name="l1179"><span class="ln">1179 </span></a>    <span class="s2">void </span><span class="s0">get_tree_degree_iterative() {</span>
+<a name="l1180"><span class="ln">1180 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1181"><span class="ln">1181 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered degree is: 0.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1182"><span class="ln">1182 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1183"><span class="ln">1183 </span></a>        <span class="s0">}</span>
+<a name="l1184"><span class="ln">1184 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Tree degree is: &quot; </span><span class="s0">&lt;&lt; _get_tree_degree_iterative(rootTree) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1185"><span class="ln">1185 </span></a>    <span class="s0">}</span>
+<a name="l1186"><span class="ln">1186 </span></a>
+<a name="l1187"><span class="ln">1187 </span></a>    <span class="s2">void </span><span class="s0">get_tree_width_iterative() {</span>
+<a name="l1188"><span class="ln">1188 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1189"><span class="ln">1189 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty and can be considered width is 0.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1190"><span class="ln">1190 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1191"><span class="ln">1191 </span></a>        <span class="s0">}</span>
+<a name="l1192"><span class="ln">1192 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Tree width is: &quot; </span><span class="s0">&lt;&lt; _get_tree_width_iterative() &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1193"><span class="ln">1193 </span></a>    <span class="s0">}</span>
+<a name="l1194"><span class="ln">1194 </span></a>
+<a name="l1195"><span class="ln">1195 </span></a>    <span class="s2">void </span><span class="s0">count_levels_recursive() {</span>
+<a name="l1196"><span class="ln">1196 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1197"><span class="ln">1197 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1198"><span class="ln">1198 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1199"><span class="ln">1199 </span></a>        <span class="s0">}</span>
+<a name="l1200"><span class="ln">1200 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Count levels of tree is: &quot; </span><span class="s0">&lt;&lt; _count_levels_from_node_to_bottom_recursive(rootTree) &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1201"><span class="ln">1201 </span></a>    <span class="s0">}</span>
+<a name="l1202"><span class="ln">1202 </span></a>
+<a name="l1203"><span class="ln">1203 </span></a>    <span class="s2">void </span><span class="s0">min_value_in_tree_iterative() {</span>
+<a name="l1204"><span class="ln">1204 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1205"><span class="ln">1205 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1206"><span class="ln">1206 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1207"><span class="ln">1207 </span></a>        <span class="s0">}</span>
+<a name="l1208"><span class="ln">1208 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Min value in your tree: &quot; </span><span class="s0">&lt;&lt; _min_value_in_tree_iterative() &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1209"><span class="ln">1209 </span></a>    <span class="s0">}</span>
+<a name="l1210"><span class="ln">1210 </span></a>
+<a name="l1211"><span class="ln">1211 </span></a>    <span class="s2">void </span><span class="s0">max_value_in_tree_iterative() {</span>
+<a name="l1212"><span class="ln">1212 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1213"><span class="ln">1213 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1214"><span class="ln">1214 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1215"><span class="ln">1215 </span></a>        <span class="s0">}</span>
+<a name="l1216"><span class="ln">1216 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Max value in your tree: &quot; </span><span class="s0">&lt;&lt; _max_value_in_tree_iterative() &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1217"><span class="ln">1217 </span></a>    <span class="s0">}</span>
+<a name="l1218"><span class="ln">1218 </span></a>
+<a name="l1219"><span class="ln">1219 </span></a>    <span class="s2">void </span><span class="s0">print_level_by_level_iterative() {</span>
+<a name="l1220"><span class="ln">1220 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1221"><span class="ln">1221 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1222"><span class="ln">1222 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1223"><span class="ln">1223 </span></a>        <span class="s0">}</span>
+<a name="l1224"><span class="ln">1224 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree level by level is:</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1225"><span class="ln">1225 </span></a>        <span class="s0">_print_level_by_level_iterative(rootTree);</span>
+<a name="l1226"><span class="ln">1226 </span></a>    <span class="s0">}</span>
+<a name="l1227"><span class="ln">1227 </span></a>
+<a name="l1228"><span class="ln">1228 </span></a>    <span class="s2">void </span><span class="s0">print_hierarchically_iterative() {</span>
+<a name="l1229"><span class="ln">1229 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1230"><span class="ln">1230 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1231"><span class="ln">1231 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1232"><span class="ln">1232 </span></a>        <span class="s0">}</span>
+<a name="l1233"><span class="ln">1233 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree as Hierarchically is:</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1234"><span class="ln">1234 </span></a>        <span class="s0">_print_hierarchically_iterative();</span>
+<a name="l1235"><span class="ln">1235 </span></a>    <span class="s0">}</span>
+<a name="l1236"><span class="ln">1236 </span></a>
+<a name="l1237"><span class="ln">1237 </span></a>    <span class="s2">void </span><span class="s0">convert_to_avl() {</span>
+<a name="l1238"><span class="ln">1238 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1239"><span class="ln">1239 </span></a>            <span class="s0">_print_empty();</span>
+<a name="l1240"><span class="ln">1240 </span></a>            <span class="s2">return</span><span class="s0">;</span>
+<a name="l1241"><span class="ln">1241 </span></a>        <span class="s0">}</span>
+<a name="l1242"><span class="ln">1242 </span></a>        <span class="s0">Edge *new_root = </span><span class="s2">nullptr</span><span class="s0">;</span>
+<a name="l1243"><span class="ln">1243 </span></a>        <span class="s0">_convert_to_avl(rootTree, new_root);</span>
+<a name="l1244"><span class="ln">1244 </span></a>        <span class="s0">_clear_tree_recursive(rootTree);</span>
+<a name="l1245"><span class="ln">1245 </span></a>        <span class="s0">rootTree = new_root;</span>
+<a name="l1246"><span class="ln">1246 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Converted successfully.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1247"><span class="ln">1247 </span></a>    <span class="s0">}</span>
+<a name="l1248"><span class="ln">1248 </span></a>
+<a name="l1249"><span class="ln">1249 </span></a>    <span class="s2">void </span><span class="s0">size_tree() </span><span class="s2">const </span><span class="s0">{</span>
+<a name="l1250"><span class="ln">1250 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Size tree is: &quot; </span><span class="s0">&lt;&lt; count_nodes &lt;&lt; </span><span class="s3">'</span><span class="s5">\n</span><span class="s3">'</span><span class="s0">;</span>
+<a name="l1251"><span class="ln">1251 </span></a>    <span class="s0">}</span>
+<a name="l1252"><span class="ln">1252 </span></a>
+<a name="l1253"><span class="ln">1253 </span></a>    <span class="s2">bool </span><span class="s0">empty() {</span>
+<a name="l1254"><span class="ln">1254 </span></a>        <span class="s2">if </span><span class="s0">(_empty()) {</span>
+<a name="l1255"><span class="ln">1255 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is empty.</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1256"><span class="ln">1256 </span></a>        <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+<a name="l1257"><span class="ln">1257 </span></a>            <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Your tree is not empty ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1258"><span class="ln">1258 </span></a>        <span class="s0">}</span>
+<a name="l1259"><span class="ln">1259 </span></a>        <span class="s2">return </span><span class="s0">_empty();</span>
+<a name="l1260"><span class="ln">1260 </span></a>    <span class="s0">}</span>
+<a name="l1261"><span class="ln">1261 </span></a>
+<a name="l1262"><span class="ln">1262 </span></a>    <span class="s2">void </span><span class="s0">clear_tree_recursive() {</span>
+<a name="l1263"><span class="ln">1263 </span></a>        <span class="s0">_clear_tree_recursive(rootTree);</span>
+<a name="l1264"><span class="ln">1264 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;Cleared successfully ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1265"><span class="ln">1265 </span></a>    <span class="s0">}</span>
+<a name="l1266"><span class="ln">1266 </span></a>
+<a name="l1267"><span class="ln">1267 </span></a><span class="s0">};</span>
+<a name="l1268"><span class="ln">1268 </span></a>
+<a name="l1269"><span class="ln">1269 </span></a><span class="s2">void </span><span class="s0">print_line() {</span>
+<a name="l1270"><span class="ln">1270 </span></a>    <span class="s2">for </span><span class="s0">(</span><span class="s2">int </span><span class="s0">i = </span><span class="s4">0</span><span class="s0">; i &lt; </span><span class="s4">90</span><span class="s0">; ++i) {</span>
+<a name="l1271"><span class="ln">1271 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">'='</span><span class="s0">;</span>
+<a name="l1272"><span class="ln">1272 </span></a>    <span class="s0">}</span>
+<a name="l1273"><span class="ln">1273 </span></a>    <span class="s0">cout &lt;&lt; endl;</span>
+<a name="l1274"><span class="ln">1274 </span></a><span class="s0">}</span>
+<a name="l1275"><span class="ln">1275 </span></a>
+<a name="l1276"><span class="ln">1276 </span></a><span class="s2">void </span><span class="s0">print_operations() {</span>
+<a name="l1277"><span class="ln">1277 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;1  - insert using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1278"><span class="ln">1278 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;2  - insert using recursive function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1279"><span class="ln">1279 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;3  - insert randomly using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1280"><span class="ln">1280 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;4  - insert using AVL function recursive</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1281"><span class="ln">1281 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;5  - delete using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1282"><span class="ln">1282 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;6  - delete using recursive function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1283"><span class="ln">1283 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;7  - delete using AVL function recursive</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1284"><span class="ln">1284 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;8  - search using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1285"><span class="ln">1285 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;9  - search using recursive function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1286"><span class="ln">1286 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;10 - pre order traversal</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1287"><span class="ln">1287 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;11 - in order traversal</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1288"><span class="ln">1288 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;12 - post order traversal</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1289"><span class="ln">1289 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;13 - is linear using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1290"><span class="ln">1290 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;14 - is complete using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1291"><span class="ln">1291 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;15 - is complete using recursive function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1292"><span class="ln">1292 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;16 - is full using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1293"><span class="ln">1293 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;17 - is full using recursive function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1294"><span class="ln">1294 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;18 - is perfect</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1295"><span class="ln">1295 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;19 - is binary search tree iterative</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1296"><span class="ln">1296 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;20 - is binary search tree recursive</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1297"><span class="ln">1297 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;21 - get depth or level of node using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1298"><span class="ln">1298 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;22 - get height of node using recursive function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1299"><span class="ln">1299 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;23 - get tree degree using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1300"><span class="ln">1300 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;24 - get tree width using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1301"><span class="ln">1301 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;25 - count levels using recursive function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1302"><span class="ln">1302 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;26 - min value in tree using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1303"><span class="ln">1303 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;27 - height value in tree using iterative function</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1304"><span class="ln">1304 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;28 - print level by level</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1305"><span class="ln">1305 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;29 - print hierarchically</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1306"><span class="ln">1306 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;30 - convert to AVL</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1307"><span class="ln">1307 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;31 - size tree</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1308"><span class="ln">1308 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;32 - empty</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1309"><span class="ln">1309 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;33 - clear</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1310"><span class="ln">1310 </span></a>    <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;34 - exit</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1311"><span class="ln">1311 </span></a><span class="s0">}</span>
+<a name="l1312"><span class="ln">1312 </span></a>
+<a name="l1313"><span class="ln">1313 </span></a><span class="s2">int </span><span class="s0">main() {</span>
+<a name="l1314"><span class="ln">1314 </span></a>
+<a name="l1315"><span class="ln">1315 </span></a>
+<a name="l1316"><span class="ln">1316 </span></a>    <span class="s0">BinarySearchTree b;</span>
+<a name="l1317"><span class="ln">1317 </span></a>
+<a name="l1318"><span class="ln">1318 </span></a>    <span class="s2">while </span><span class="s0">(</span><span class="s2">true</span><span class="s0">) {</span>
+<a name="l1319"><span class="ln">1319 </span></a>
+<a name="l1320"><span class="ln">1320 </span></a>        <span class="s0">print_operations();</span>
+<a name="l1321"><span class="ln">1321 </span></a>        <span class="s0">print_line();</span>
+<a name="l1322"><span class="ln">1322 </span></a>        <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter number operation:&quot;</span><span class="s0">;</span>
+<a name="l1323"><span class="ln">1323 </span></a>        <span class="s2">int </span><span class="s0">op;</span>
+<a name="l1324"><span class="ln">1324 </span></a>        <span class="s0">myType x;</span>
+<a name="l1325"><span class="ln">1325 </span></a>        <span class="s0">cin &gt;&gt; op;</span>
+<a name="l1326"><span class="ln">1326 </span></a>
+<a name="l1327"><span class="ln">1327 </span></a>        <span class="s2">switch </span><span class="s0">(op) {</span>
+<a name="l1328"><span class="ln">1328 </span></a>            <span class="s2">case </span><span class="s4">1</span><span class="s0">:</span>
+<a name="l1329"><span class="ln">1329 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1330"><span class="ln">1330 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1331"><span class="ln">1331 </span></a>                <span class="s0">b.insert_iterative(x);</span>
+<a name="l1332"><span class="ln">1332 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1333"><span class="ln">1333 </span></a>            <span class="s2">case </span><span class="s4">2</span><span class="s0">:</span>
+<a name="l1334"><span class="ln">1334 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1335"><span class="ln">1335 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1336"><span class="ln">1336 </span></a>                <span class="s0">b.insert_recursive(x);</span>
+<a name="l1337"><span class="ln">1337 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1338"><span class="ln">1338 </span></a>            <span class="s2">case </span><span class="s4">3</span><span class="s0">:</span>
+<a name="l1339"><span class="ln">1339 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1340"><span class="ln">1340 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1341"><span class="ln">1341 </span></a>                <span class="s0">b.insert_random_iterative(x);</span>
+<a name="l1342"><span class="ln">1342 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1343"><span class="ln">1343 </span></a>            <span class="s2">case </span><span class="s4">4</span><span class="s0">:</span>
+<a name="l1344"><span class="ln">1344 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1345"><span class="ln">1345 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1346"><span class="ln">1346 </span></a>                <span class="s0">b.insert_value_using_avl_function(x, </span><span class="s2">true</span><span class="s0">);</span>
+<a name="l1347"><span class="ln">1347 </span></a>            <span class="s2">case </span><span class="s4">5</span><span class="s0">:</span>
+<a name="l1348"><span class="ln">1348 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1349"><span class="ln">1349 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1350"><span class="ln">1350 </span></a>                <span class="s0">b.delete_value_iterative(x);</span>
+<a name="l1351"><span class="ln">1351 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1352"><span class="ln">1352 </span></a>            <span class="s2">case </span><span class="s4">6</span><span class="s0">:</span>
+<a name="l1353"><span class="ln">1353 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1354"><span class="ln">1354 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1355"><span class="ln">1355 </span></a>                <span class="s0">b.delete_value_recursive(x);</span>
+<a name="l1356"><span class="ln">1356 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1357"><span class="ln">1357 </span></a>            <span class="s2">case </span><span class="s4">7</span><span class="s0">:</span>
+<a name="l1358"><span class="ln">1358 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1359"><span class="ln">1359 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1360"><span class="ln">1360 </span></a>                <span class="s0">b.delete_value_using_avl_function_recursive(x);</span>
+<a name="l1361"><span class="ln">1361 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1362"><span class="ln">1362 </span></a>            <span class="s2">case </span><span class="s4">8</span><span class="s0">:</span>
+<a name="l1363"><span class="ln">1363 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1364"><span class="ln">1364 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1365"><span class="ln">1365 </span></a>                <span class="s0">b.search_iterative(x);</span>
+<a name="l1366"><span class="ln">1366 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1367"><span class="ln">1367 </span></a>            <span class="s2">case </span><span class="s4">9</span><span class="s0">:</span>
+<a name="l1368"><span class="ln">1368 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1369"><span class="ln">1369 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1370"><span class="ln">1370 </span></a>                <span class="s0">b.search_recursive(x);</span>
+<a name="l1371"><span class="ln">1371 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1372"><span class="ln">1372 </span></a>            <span class="s2">case </span><span class="s4">10</span><span class="s0">:</span>
+<a name="l1373"><span class="ln">1373 </span></a>                <span class="s0">b.pre_order();</span>
+<a name="l1374"><span class="ln">1374 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1375"><span class="ln">1375 </span></a>            <span class="s2">case </span><span class="s4">11</span><span class="s0">:</span>
+<a name="l1376"><span class="ln">1376 </span></a>                <span class="s0">b.in_order();</span>
+<a name="l1377"><span class="ln">1377 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1378"><span class="ln">1378 </span></a>            <span class="s2">case </span><span class="s4">12</span><span class="s0">:</span>
+<a name="l1379"><span class="ln">1379 </span></a>                <span class="s0">b.post_order();</span>
+<a name="l1380"><span class="ln">1380 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1381"><span class="ln">1381 </span></a>            <span class="s2">case </span><span class="s4">13</span><span class="s0">:</span>
+<a name="l1382"><span class="ln">1382 </span></a>                <span class="s0">b.is_linear_iterative();</span>
+<a name="l1383"><span class="ln">1383 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1384"><span class="ln">1384 </span></a>            <span class="s2">case </span><span class="s4">14</span><span class="s0">:</span>
+<a name="l1385"><span class="ln">1385 </span></a>                <span class="s0">b.is_complete_iterative();</span>
+<a name="l1386"><span class="ln">1386 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1387"><span class="ln">1387 </span></a>            <span class="s2">case </span><span class="s4">15</span><span class="s0">:</span>
+<a name="l1388"><span class="ln">1388 </span></a>                <span class="s0">b.is_complete_recursive();</span>
+<a name="l1389"><span class="ln">1389 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1390"><span class="ln">1390 </span></a>            <span class="s2">case </span><span class="s4">16</span><span class="s0">:</span>
+<a name="l1391"><span class="ln">1391 </span></a>                <span class="s0">b.is_full_iterative();</span>
+<a name="l1392"><span class="ln">1392 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1393"><span class="ln">1393 </span></a>            <span class="s2">case </span><span class="s4">17</span><span class="s0">:</span>
+<a name="l1394"><span class="ln">1394 </span></a>                <span class="s0">b.is_full_recursive();</span>
+<a name="l1395"><span class="ln">1395 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1396"><span class="ln">1396 </span></a>            <span class="s2">case </span><span class="s4">18</span><span class="s0">:</span>
+<a name="l1397"><span class="ln">1397 </span></a>                <span class="s0">b.is_perfect();</span>
+<a name="l1398"><span class="ln">1398 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1399"><span class="ln">1399 </span></a>            <span class="s2">case </span><span class="s4">19</span><span class="s0">:</span>
+<a name="l1400"><span class="ln">1400 </span></a>                <span class="s0">b.is_binary_search_tree_iterative();</span>
+<a name="l1401"><span class="ln">1401 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1402"><span class="ln">1402 </span></a>            <span class="s2">case </span><span class="s4">20</span><span class="s0">:</span>
+<a name="l1403"><span class="ln">1403 </span></a>                <span class="s0">b.is_binary_search_tree_recursive();</span>
+<a name="l1404"><span class="ln">1404 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1405"><span class="ln">1405 </span></a>            <span class="s2">case </span><span class="s4">21</span><span class="s0">:</span>
+<a name="l1406"><span class="ln">1406 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1407"><span class="ln">1407 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1408"><span class="ln">1408 </span></a>                <span class="s0">b.get_depth_or_level_of_node_iterative(x);</span>
+<a name="l1409"><span class="ln">1409 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1410"><span class="ln">1410 </span></a>            <span class="s2">case </span><span class="s4">22</span><span class="s0">:</span>
+<a name="l1411"><span class="ln">1411 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;enter value:&quot;</span><span class="s0">;</span>
+<a name="l1412"><span class="ln">1412 </span></a>                <span class="s0">cin &gt;&gt; x;</span>
+<a name="l1413"><span class="ln">1413 </span></a>                <span class="s0">b.get_height_of_node_recursive(x);</span>
+<a name="l1414"><span class="ln">1414 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1415"><span class="ln">1415 </span></a>            <span class="s2">case </span><span class="s4">23</span><span class="s0">:</span>
+<a name="l1416"><span class="ln">1416 </span></a>                <span class="s0">b.get_tree_degree_iterative();</span>
+<a name="l1417"><span class="ln">1417 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1418"><span class="ln">1418 </span></a>            <span class="s2">case </span><span class="s4">24</span><span class="s0">:</span>
+<a name="l1419"><span class="ln">1419 </span></a>                <span class="s0">b.get_tree_width_iterative();</span>
+<a name="l1420"><span class="ln">1420 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1421"><span class="ln">1421 </span></a>            <span class="s2">case </span><span class="s4">25</span><span class="s0">:</span>
+<a name="l1422"><span class="ln">1422 </span></a>                <span class="s0">b.count_levels_recursive();</span>
+<a name="l1423"><span class="ln">1423 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1424"><span class="ln">1424 </span></a>            <span class="s2">case </span><span class="s4">26</span><span class="s0">:</span>
+<a name="l1425"><span class="ln">1425 </span></a>                <span class="s0">b.min_value_in_tree_iterative();</span>
+<a name="l1426"><span class="ln">1426 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1427"><span class="ln">1427 </span></a>            <span class="s2">case </span><span class="s4">27</span><span class="s0">:</span>
+<a name="l1428"><span class="ln">1428 </span></a>                <span class="s0">b.max_value_in_tree_iterative();</span>
+<a name="l1429"><span class="ln">1429 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1430"><span class="ln">1430 </span></a>            <span class="s2">case </span><span class="s4">28</span><span class="s0">:</span>
+<a name="l1431"><span class="ln">1431 </span></a>                <span class="s0">b.print_level_by_level_iterative();</span>
+<a name="l1432"><span class="ln">1432 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1433"><span class="ln">1433 </span></a>            <span class="s2">case </span><span class="s4">29</span><span class="s0">:</span>
+<a name="l1434"><span class="ln">1434 </span></a>                <span class="s0">b.print_hierarchically_iterative();</span>
+<a name="l1435"><span class="ln">1435 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1436"><span class="ln">1436 </span></a>            <span class="s2">case </span><span class="s4">30</span><span class="s0">:</span>
+<a name="l1437"><span class="ln">1437 </span></a>                <span class="s0">b.convert_to_avl();</span>
+<a name="l1438"><span class="ln">1438 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1439"><span class="ln">1439 </span></a>            <span class="s2">case </span><span class="s4">31</span><span class="s0">:</span>
+<a name="l1440"><span class="ln">1440 </span></a>                <span class="s0">b.size_tree();</span>
+<a name="l1441"><span class="ln">1441 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1442"><span class="ln">1442 </span></a>            <span class="s2">case </span><span class="s4">32</span><span class="s0">:</span>
+<a name="l1443"><span class="ln">1443 </span></a>                <span class="s0">b.empty();</span>
+<a name="l1444"><span class="ln">1444 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1445"><span class="ln">1445 </span></a>            <span class="s2">case </span><span class="s4">33</span><span class="s0">:</span>
+<a name="l1446"><span class="ln">1446 </span></a>                <span class="s0">b.clear_tree_recursive();</span>
+<a name="l1447"><span class="ln">1447 </span></a>                <span class="s2">break</span><span class="s0">;</span>
+<a name="l1448"><span class="ln">1448 </span></a>            <span class="s2">case </span><span class="s4">34</span><span class="s0">:</span>
+<a name="l1449"><span class="ln">1449 </span></a>                <span class="s2">return </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l1450"><span class="ln">1450 </span></a>            <span class="s2">default</span><span class="s0">: {</span>
+<a name="l1451"><span class="ln">1451 </span></a>                <span class="s0">cout &lt;&lt; </span><span class="s3">&quot;wrong input ...!</span><span class="s5">\n</span><span class="s3">&quot;</span><span class="s0">;</span>
+<a name="l1452"><span class="ln">1452 </span></a>                <span class="s2">goto </span><span class="s0">h;</span>
+<a name="l1453"><span class="ln">1453 </span></a>            <span class="s0">}</span>
+<a name="l1454"><span class="ln">1454 </span></a>        <span class="s0">}</span>
+<a name="l1455"><span class="ln">1455 </span></a>        <span class="s0">print_line();</span>
+<a name="l1456"><span class="ln">1456 </span></a>    <span class="s0">}</span>
+<a name="l1457"><span class="ln">1457 </span></a>
+<a name="l1458"><span class="ln">1458 </span></a>    <span class="s0">h:;</span>
+<a name="l1459"><span class="ln">1459 </span></a>
+<a name="l1460"><span class="ln">1460 </span></a>    <span class="s2">return </span><span class="s4">0</span><span class="s0">;</span>
+<a name="l1461"><span class="ln">1461 </span></a><span class="s0">}</span>
+<a name="l1462"><span class="ln">1462 </span></a>
+<a name="l1463"><span class="ln">1463 </span></a><span class="s1">/* 
+<a name="l1464"><span class="ln">1464 </span></a> 
+<a name="l1465"><span class="ln">1465 </span></a>  1 20 1 30 1 10 1 20 1 15 1 25 1 5 1 35 1 4 1 8 1 13 1 22 1 27 1 34 1 36 1 11 1 3 1 23 1 7 1 37 1 21 1 264 1 9 1 26 
+<a name="l1466"><span class="ln">1466 </span></a>  1 15 1 10 1 20 1 5 1 13 1 21 1 17 1 6 1 1 
+<a name="l1467"><span class="ln">1467 </span></a>  1 25 1 20 1 36 1 10 1 22 1 30 1 40 1 5 1 14  1 28 1 38 1 48 1 11 1 15 
+<a name="l1468"><span class="ln">1468 </span></a> 
+<a name="l1469"><span class="ln">1469 </span></a> * */</span>
+<a name="l1470"><span class="ln">1470 </span></a>
+<a name="l1471"><span class="ln">1471 </span></a></pre>
+</body>
+</html>
