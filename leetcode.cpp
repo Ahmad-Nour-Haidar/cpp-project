@@ -2,33 +2,47 @@
 
 using namespace std;
 
-// Ahmad Nour Haidar
+struct ListNode {
+    int val;
+    ListNode *next;
+
+    ListNode() : val(0), next(nullptr) {}
+
+    explicit ListNode(int x) : val(x), next(nullptr) {}
+
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
 class Solution {
 public:
-    int minimumLength(const string &s) {
-        int len = s.length();
-        if (len == 1)return 1;
-        int l = 0, r = len - 1, c = 0;
-        while (l < r) {
-            if (s[l] == s[r]) {
-                l++;
-                r--;
-                c += 2;
-            } else if (l > 0 and s[l] == s[l - 1]) {
-                l++;
-                c++;
-            } else if (r < len and s[r] == s[r + 1]) {
-                r--;
-                c++;
-            } else break;
+    int pairSum(ListNode *head) {
+        auto *slow = head;
+        auto *fast = head;
+        // find middle
+        while (fast and fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        if ((len & 1) and (len - c) == 1 and s[(len / 2)] == s[(len / 2) - 1])c++;
-        return len - c;
+        auto *mid = slow;
+        stack<ListNode *> s;
+        while (slow) {
+            s.emplace(slow);
+            slow = slow->next;
+        }
+        slow = head;
+        int ans = 0;
+        while (slow not_eq mid) {
+            int top = s.top()->val;
+            s.pop();
+            ans = max(ans, slow->val + top);
+            slow = slow->next;
+        }
+        return ans;
     }
 };
 
 int main() {
-    int a[123] = {};
-    for (auto it :a)cout << it << endl;
+
+
     return 0;
 }
